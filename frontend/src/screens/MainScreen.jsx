@@ -1,23 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import MainHeader from "../components/MainHeader";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import axios from "axios";
 
 const MainScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
-  const [workoutOfDay, setWorkoutOfDay] = useState({});
-
-  const API_KEY = "a8QKtCXDr+YhDzCuEze3sg==92yRGYcjvYNszt5X";
-
-  useEffect(() => {
-    axios
-      .get("https://api.api-ninjas.com/v1/exercises?muscle=biceps", {
-        headers: { "X-Api-Key": API_KEY },
-      })
-      .then((res) => setWorkoutOfDay(res))
-      .catch((err) => console.log(err));
-  }, [workoutOfDay]);
 
   return (
     <div>

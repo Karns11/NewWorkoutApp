@@ -1,7 +1,15 @@
 import React from "react";
 import exercise from "../assets/hero_image.png";
+import { useNavigate } from "react-router-dom";
 
 const Info = () => {
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    navigate("/login");
+  };
+
   return (
     <div className="w-full bg-white py-16 px-4">
       <div className="max-w-[1240px] mx-auto grid md:grid-cols-2">
@@ -17,7 +25,10 @@ const Info = () => {
             eveniet ex deserunt fuga?
           </p>
           <div className="w-full flex justify-center">
-            <button className="bg-black text-[#00df9a] w-[200px] rounded-md font-medium my-6 mx-auto md:mx-0 py-3">
+            <button
+              onClick={handleClick}
+              className="bg-black text-[#00df9a] w-[200px] rounded-md font-medium my-6 mx-auto md:mx-0 py-3"
+            >
               Get Started
             </button>
           </div>
