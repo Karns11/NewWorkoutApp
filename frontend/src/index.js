@@ -18,6 +18,7 @@ import store from "./store";
 import MainScreen from "./screens/MainScreen";
 import PrivateRoute from "./components/PrivateRoute";
 import ProfileScreen from "./screens/ProfileScreen";
+import WorkoutScreen from "./screens/WorkoutScreen";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path="" element={<PrivateRoute />}>
         <Route path="/mainscreen" element={<MainScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
+        <Route path="/users/workout/:id" element={<WorkoutScreen />} />
       </Route>
     </Route>
   )

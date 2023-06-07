@@ -35,14 +35,20 @@ const MainScreen = () => {
 
   const workoutSubmitHandler = async (e) => {
     e.preventDefault();
-    try {
-      await addWorkout({ workoutName: aWorkout, workoutDay: selectedDay });
-      refetch();
-      setAWorkout("");
-      setSelectedDay("");
-      toast.success("Workout added successfully");
-    } catch (err) {
-      toast.error(err?.data?.message || err.error);
+    if (!aWorkout) {
+      toast.error("Please enter a workout name");
+    } else if (!selectedDay) {
+      toast.error("Please select a day for your workout");
+    } else {
+      try {
+        await addWorkout({ workoutName: aWorkout, workoutDay: selectedDay });
+        refetch();
+        setAWorkout("");
+        setSelectedDay("");
+        toast.success("Workout added successfully");
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
     }
   };
 
@@ -174,7 +180,9 @@ const MainScreen = () => {
               </Row>
               <Row>
                 <Col className="mb-2">
-                  <Button type="submit">Add Workout</Button>
+                  <Button disabled={!aWorkout && !selectedDay} type="submit">
+                    Add Workout
+                  </Button>
                 </Col>
                 {isLoading && <Loader />}
               </Row>
@@ -228,29 +236,7 @@ const MainScreen = () => {
                                     </h6>
                                   </Card.Subtitle>
 
-                                  <Card.Text>
-                                    {workout.exercises.length > 0 ? (
-                                      <Row>
-                                        <Col>
-                                          <p>
-                                            {workout.exercises.map(
-                                              (singleExercise, index) => (
-                                                <span key={index}>
-                                                  {singleExercise}
-                                                  {index !==
-                                                  workout.exercises.length - 1
-                                                    ? ", "
-                                                    : ""}
-                                                </span>
-                                              )
-                                            )}
-                                          </p>
-                                        </Col>
-                                      </Row>
-                                    ) : (
-                                      "*Add exercises*"
-                                    )}
-                                  </Card.Text>
+                                  <Card.Text>"*Add exercises*"</Card.Text>
                                 </Card.Body>
                               </Link>
                               <Button

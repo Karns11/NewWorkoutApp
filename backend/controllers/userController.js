@@ -143,6 +143,28 @@ const getWorkouts = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc   Get workout by id
+//route    GET /api/users/workouts/:id
+//@access  Private
+const getWorkout = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  try {
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const workouts = user.workouts;
+
+    const workout = workouts.find(
+      (workout) => workout._id.toString() === req.params.id
+    );
+    res.status(200).json(workout);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // @desc   Add workout
 //route    POST /api/users/workouts
 //@access  Private
@@ -206,13 +228,97 @@ const deleteWorkout = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Add an exercise
+// @route POST /api/users/workout/:id/exercise
+// @access Private
+const addExercise = asyncHandler(async (req, res) => {
+  try {
+    const { name, reps, sets } = req.body;
+
+    // Find the user by userId
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    const workouts = user.workouts;
+
+    const workout = workouts.find(
+      (workout) => workout._id.toString() === req.params.id
+    );
+
+    if (!workout) {
+      res.status(404);
+      throw new Error("Workout not found");
+    }
+
+    // Create a new exercise and add it to the workout
+    const newExercise = {
+      name,
+      reps,
+      sets,
+    };
+
+    workout.exercises.push(newExercise);
+
+    await user.save();
+
+    res.status(200).json({
+      name: user.name,
+      email: user.email,
+      height: user.height,
+      weight: user.weight,
+      workouts: user.workouts,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// @desc Get Exercises for a workout
+// @route GET /api/users/workout/:id/exercise
+// @access Private
+const getExercises = asyncHandler(async (req, res) => {
+  try {
+    // Find the user by userId
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    const workouts = user.workouts;
+
+    const workout = workouts.find(
+      (workout) => workout._id.toString() === req.params.id
+    );
+
+    if (!workout) {
+      res.status(404);
+      throw new Error("Workout not found");
+    }
+
+    res.status(200).json({
+      exercises: workout.exercises,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export {
   authUser,
   registerUser,
   logoutUser,
   getUserProfile,
   updateUserProfile,
+  getWorkout,
   addWorkout,
   getWorkouts,
   deleteWorkout,
+  addExercise,
+  getExercises,
 };

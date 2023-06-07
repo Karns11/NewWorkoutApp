@@ -50,6 +50,16 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    getExercises: builder.query({
+      query: (workoutId) => ({
+        url: `${USERS_URL}/workout/${workoutId}/exercise`,
+      }),
+    }),
+    getWorkoutById: builder.query({
+      query: (workoutId) => ({
+        url: `${USERS_URL}/workout/${workoutId}`,
+      }),
+    }),
   }),
 });
 
@@ -61,4 +71,6 @@ export const {
   useAddWorkoutMutation,
   useGetWorkoutsQuery,
   useDeleteWorkoutMutation,
+  useGetExercisesQuery,
+  useGetWorkoutByIdQuery,
 } = usersApiSlice;
