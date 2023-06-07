@@ -25,8 +25,40 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
       }),
     }),
+    profile: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/profile`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    addWorkout: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/workouts`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getWorkouts: builder.query({
+      query: () => ({
+        url: `${USERS_URL}/workouts`,
+      }),
+    }),
+    deleteWorkout: builder.mutation({
+      query: (workoutId) => ({
+        url: `${USERS_URL}/workout/${workoutId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
-  usersApiSlice;
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useProfileMutation,
+  useAddWorkoutMutation,
+  useGetWorkoutsQuery,
+  useDeleteWorkoutMutation,
+} = usersApiSlice;

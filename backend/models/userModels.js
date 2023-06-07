@@ -25,6 +25,7 @@ const workoutSchema = mongoose.Schema({
   },
   day: {
     type: String,
+    required: true,
   },
   exercises: [exerciseSchema],
 });

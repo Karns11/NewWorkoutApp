@@ -7,6 +7,9 @@ import {
   logoutUser,
   getUserProfile,
   updateUserProfile,
+  addWorkout,
+  getWorkouts,
+  deleteWorkout,
 } from "../controllers/userController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -18,5 +21,7 @@ router
   .route("/profile")
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+router.route("/workouts").get(protect, getWorkouts).post(protect, addWorkout);
+router.route("/workout/:id").delete(protect, deleteWorkout);
 
 export default router;

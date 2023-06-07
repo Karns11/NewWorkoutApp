@@ -100,7 +100,7 @@ const RegisterScreen = () => {
           </Form.Group>
 
           <Form.Group controlId="height" className="my-3">
-            <Form.Label>Height</Form.Label>
+            <Form.Label>Height (in)</Form.Label>
             <Form.Control
               type="number"
               placeholder="Enter height"
@@ -110,7 +110,7 @@ const RegisterScreen = () => {
           </Form.Group>
 
           <Form.Group controlId="weight" className="my-3">
-            <Form.Label>Weight</Form.Label>
+            <Form.Label>Weight (lbs)</Form.Label>
             <Form.Control
               type="number"
               placeholder="Enter weight"
