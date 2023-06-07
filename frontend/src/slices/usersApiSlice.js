@@ -60,6 +60,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/workout/${workoutId}`,
       }),
     }),
+    addExercise: builder.mutation({
+      query: (exerciseData) => ({
+        url: `${USERS_URL}/workout/${exerciseData.workoutId}/exercise`,
+        method: "POST",
+        body: exerciseData,
+      }),
+    }),
   }),
 });
 
@@ -73,4 +80,5 @@ export const {
   useDeleteWorkoutMutation,
   useGetExercisesQuery,
   useGetWorkoutByIdQuery,
+  useAddExerciseMutation,
 } = usersApiSlice;

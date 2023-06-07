@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MainHeader from "../components/MainHeader";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  ListGroup,
+  Row,
+} from "react-bootstrap";
 import { useSelector } from "react-redux";
 import {
   useAddWorkoutMutation,
@@ -29,6 +37,10 @@ const MainScreen = () => {
   const [deleteWorkout, { isLoading: loadingDeleteWorkout }] =
     useDeleteWorkoutMutation();
 
+  useEffect(() => {
+    refetch();
+  }, []);
+
   const handleDayChange = (e) => {
     setSelectedDay(e.target.value);
   };
@@ -53,12 +65,14 @@ const MainScreen = () => {
   };
 
   const deleteWorkoutHandler = async (workoutId) => {
-    try {
-      await deleteWorkout(workoutId);
-      refetch();
-      toast.success("Workout successfully deleted");
-    } catch (err) {
-      toast.error(err?.data?.message || err.error);
+    if (window.confirm("Are you sure")) {
+      try {
+        await deleteWorkout(workoutId);
+        refetch();
+        toast.success("Workout successfully deleted");
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
     }
   };
 
@@ -180,7 +194,11 @@ const MainScreen = () => {
               </Row>
               <Row>
                 <Col className="mb-2">
-                  <Button disabled={!aWorkout && !selectedDay} type="submit">
+                  <Button
+                    className="btn-dark"
+                    disabled={!aWorkout && !selectedDay}
+                    type="submit"
+                  >
                     Add Workout
                   </Button>
                 </Col>
@@ -192,7 +210,7 @@ const MainScreen = () => {
         <Row>
           <Col>
             <Card
-              className="p-2 mt-2"
+              className="p-2 mt-2 mb-3"
               style={{ boxShadow: "0px 0px 8px black" }}
             >
               <h2 className="text-center mt-1">Your Collection</h2>
@@ -216,30 +234,63 @@ const MainScreen = () => {
                         )}
                         {filteredWorkouts.map((workout) => (
                           <Col md={4} key={workout._id}>
-                            <Card className="bg-dark mt-2" id={workout._id}>
+                            <Card id={workout._id} className="hover-card">
                               <Link
                                 to={`/users/workout/${workout._id}`}
                                 style={{ textDecoration: "none" }}
                               >
-                                <Card.Body>
-                                  <Card.Title>
-                                    <h2 className="text-light">
-                                      {workout.name.charAt(0).toUpperCase() +
-                                        workout.name.slice(1)}
-                                    </h2>
-                                  </Card.Title>
-                                  <Card.Subtitle>
-                                    <h6 className="text-light">
-                                      <i className="fa-solid fa-calendar-days"></i>{" "}
-                                      {workout.day.charAt(0).toUpperCase() +
-                                        workout.day.slice(1)}
-                                    </h6>
-                                  </Card.Subtitle>
+                                <ListGroup variant="flush">
+                                  <ListGroup.Item>
+                                    <Row>
+                                      <Col md={12}>
+                                        <h3>
+                                          {workout.name
+                                            .charAt(0)
+                                            .toUpperCase() +
+                                            workout.name.slice(1)}
+                                        </h3>
+                                      </Col>
+                                    </Row>
+                                  </ListGroup.Item>
+                                  <ListGroup.Item>
+                                    <Row>
+                                      <Col md={1}>
+                                        <i className="fa-solid fa-calendar-days"></i>
+                                      </Col>
+                                      <Col>
+                                        {workout.day.charAt(0).toUpperCase() +
+                                          workout.day.slice(1)}
+                                      </Col>
+                                    </Row>
+                                  </ListGroup.Item>
+                                  {workout.exercises.length > 0 && (
+                                    <ListGroup.Item>
+                                      <Row>
+                                        <Col xs={4} md={4}>
+                                          <h4>Exercises:</h4>
+                                        </Col>
 
-                                  <Card.Text>"*Add exercises*"</Card.Text>
-                                </Card.Body>
+                                        <Col xs={5} md={5}>
+                                          {workout.exercises.map((exercise) => (
+                                            <p key={exercise._id}>
+                                              {exercise.name}
+                                            </p>
+                                          ))}
+                                        </Col>
+                                        <Col xs={3} md={3}>
+                                          {workout.exercises.map((exercise) => (
+                                            <p key={exercise._id}>
+                                              {exercise.sets} X {exercise.reps}
+                                            </p>
+                                          ))}
+                                        </Col>
+                                      </Row>
+                                    </ListGroup.Item>
+                                  )}
+                                </ListGroup>
                               </Link>
                               <Button
+                                className="btn-danger"
                                 onClick={() =>
                                   deleteWorkoutHandler(workout._id)
                                 }

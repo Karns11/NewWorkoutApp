@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Container } from "react-bootstrap";
 
 import { useDispatch, useSelector } from "react-redux";
 import MainHeader from "../components/MainHeader";
@@ -8,6 +8,7 @@ import Loader from "../components/Loader";
 import { useProfileMutation } from "../slices/usersApiSlice";
 import FormContainer from "../components/FormContainer";
 import { setCredentials } from "../slices/authSlice";
+import { Link } from "react-router-dom";
 
 const ProfileScreen = () => {
   const [firstName, setFirstName] = useState("");
@@ -52,6 +53,11 @@ const ProfileScreen = () => {
   return (
     <>
       <MainHeader />
+      <Container>
+        <Link className="btn btn-light mt-3" to="/mainscreen">
+          Go Back
+        </Link>
+      </Container>
       <FormContainer className="pt-5 mt-5">
         <h2 className="mt-5">User Profile</h2>
 

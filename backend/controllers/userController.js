@@ -266,11 +266,7 @@ const addExercise = asyncHandler(async (req, res) => {
     await user.save();
 
     res.status(200).json({
-      name: user.name,
-      email: user.email,
-      height: user.height,
-      weight: user.weight,
-      workouts: user.workouts,
+      workout,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
