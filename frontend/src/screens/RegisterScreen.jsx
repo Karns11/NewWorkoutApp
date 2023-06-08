@@ -49,7 +49,6 @@ const RegisterScreen = () => {
           weight,
           password,
         }).unwrap();
-        console.log(res);
         dispatch(setCredentials({ ...res }));
         navigate(redirect);
       } catch (err) {

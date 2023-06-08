@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import MainHeader from "../components/MainHeader";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
-import { useProfileMutation } from "../slices/usersApiSlice";
+import {
+  useGetUserProfileQuery,
+  useProfileMutation,
+} from "../slices/usersApiSlice";
 import FormContainer from "../components/FormContainer";
 import { setCredentials } from "../slices/authSlice";
 import { Link } from "react-router-dom";
@@ -15,6 +18,8 @@ const ProfileScreen = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [height, setHeight] = useState(1);
+  const [weight, setWeight] = useState(1);
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const { userInfo } = useSelector((state) => state.auth);
@@ -22,11 +27,27 @@ const ProfileScreen = () => {
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
 
+  const {
+    data: userProfile,
+    isLoading: loadingGetProfile,
+    refetch,
+  } = useGetUserProfileQuery();
+
+  console.log(userProfile);
+
   useEffect(() => {
     setFirstName(userInfo.firstName);
     setLastName(userInfo.lastName);
     setEmail(userInfo.email);
-  }, [userInfo.email, userInfo.firstName, userInfo.lastName]);
+    setHeight(userInfo.height);
+    setWeight(userInfo.weight);
+  }, [
+    userInfo.email,
+    userInfo.firstName,
+    userInfo.lastName,
+    userInfo.height,
+    userInfo.weight,
+  ]);
 
   const dispatch = useDispatch();
   const submitHandler = async (e) => {
@@ -40,6 +61,8 @@ const ProfileScreen = () => {
           firstName,
           lastName,
           email,
+          height,
+          weight,
           password,
         }).unwrap();
         dispatch(setCredentials({ ...res }));
@@ -79,6 +102,26 @@ const ProfileScreen = () => {
               placeholder="Enter last name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="height" className="my-3">
+            <Form.Label>Height (in)</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter height"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="weight" className="my-3">
+            <Form.Label>Weight (lbs)</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter weight"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
             ></Form.Control>
           </Form.Group>
 

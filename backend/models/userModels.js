@@ -58,6 +58,23 @@ const userSchema = mongoose.Schema(
       default: 0,
     },
     workouts: [workoutSchema],
+    friends: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        firstName: {
+          type: String,
+          required: true,
+        },
+        lastName: {
+          type: String,
+          required: true,
+        },
+        workouts: [workoutSchema],
+      },
+    ],
   },
   {
     timestamps: true,

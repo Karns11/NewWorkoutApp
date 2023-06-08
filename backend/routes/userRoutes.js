@@ -13,6 +13,8 @@ import {
   addExercise,
   getExercises,
   getWorkout,
+  deleteExercise,
+  addFriend,
 } from "../controllers/userController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -33,5 +35,11 @@ router
   .route("/workout/:id/exercise")
   .post(protect, addExercise)
   .get(protect, getExercises);
+
+router
+  .route("/workout/:workoutId/exercise/:exerciseId")
+  .delete(protect, deleteExercise);
+
+router.route("/friends/:friendId").post(protect, addFriend);
 
 export default router;

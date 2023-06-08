@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import MainHeader from "../components/MainHeader";
 import {
   useAddExerciseMutation,
+  useDeleteExerciseMutation,
   useGetExercisesQuery,
   useGetWorkoutByIdQuery,
 } from "../slices/usersApiSlice";
@@ -33,6 +34,9 @@ const WorkoutScreen = () => {
   const [addExerciseMutation, { isLoading: loadingAddExercise }] =
     useAddExerciseMutation();
 
+  const [deleteExercise, { isLoading: loadingDeleteExercise }] =
+    useDeleteExerciseMutation();
+
   const handleAddExercise = async (event) => {
     event.preventDefault();
 
@@ -50,6 +54,21 @@ const WorkoutScreen = () => {
       setAnExercise("");
       setReps(0);
       setSets(0);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const deleteExerciseHandler = async (workoutId, exerciseId) => {
+    const data = {
+      workoutId,
+      exerciseId,
+    };
+
+    try {
+      await deleteExercise(data);
+      refetch();
+      toast.success("Exercise successfully deleted");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -91,7 +110,12 @@ const WorkoutScreen = () => {
                           {exercise.sets} X {exercise.reps}
                         </Col>
                         <Col md={2}>
-                          <i className="fa-solid fa-trash exercise-delete"></i>
+                          <i
+                            onClick={() =>
+                              deleteExerciseHandler(workoutId, exercise._id)
+                            }
+                            className="fa-solid fa-trash exercise-delete"
+                          ></i>
                         </Col>
                       </Row>
                     </ListGroup.Item>

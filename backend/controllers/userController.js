@@ -88,7 +88,10 @@ const getUserProfile = asyncHandler(async (req, res) => {
     _id: req.user._id,
     firstName: req.user.firstName,
     lastName: req.user.lastName,
+    height: req.user.height,
+    weight: req.user.weight,
     email: req.user.email,
+    friends: req.user.friends,
   };
   res.status(200).json(user);
 });
@@ -103,6 +106,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.firstName = req.body.firstName || user.firstName;
     user.lastName = req.body.lastName || user.lastName;
     user.email = req.body.email || user.email;
+    user.height = req.body.height || user.height;
+    user.weight = req.body.weight || user.weight;
 
     if (req.body.password) {
       user.password = req.body.password;
@@ -305,6 +310,102 @@ const getExercises = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Delete an exercise
+// @route DELETE /api/users/workout/:workoutId/exercise/exerciseId
+// @access Private
+const deleteExercise = asyncHandler(async (req, res) => {
+  try {
+    // Find the user by userId
+    const user = await User.findById(req.user._id);
+    const { workoutId, exerciseId } = req.params;
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    const workout = user.workouts.id(workoutId);
+
+    if (!workout) {
+      res.status(404);
+      throw new Error("Workout not found");
+    }
+
+    // Find the index of the exercise within the exercises array
+    const exerciseIndex = workout.exercises.findIndex(
+      (exercise) => exercise._id.toString() === exerciseId
+    );
+
+    if (exerciseIndex === -1) {
+      return res.status(404).json({ message: "Exercise not found" });
+    }
+
+    // Remove the exercise from the exercises array using splice
+    workout.exercises.splice(exerciseIndex, 1);
+
+    // Save the updated user
+    await user.save();
+
+    return res.status(200).json({ message: "Exercise deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// @desc Add a friend
+// @route POST /api/users/friends/:friendId
+// @access Private
+const addFriend = asyncHandler(async (req, res) => {
+  const { friendId } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const friend = await User.findById(friendId);
+    if (!friend) {
+      return res.status(404).json({ message: "Friend not found" });
+    }
+
+    // Check if the users are already friends
+    const isUserFriend = user.friends.some(
+      (friend) => friend.user.toString() === friendId
+    );
+    const isFriendFriend = friend.friends.some(
+      (friend) => friend.user.toString() === userId
+    );
+    if (isUserFriend || isFriendFriend) {
+      return res.status(400).json({ message: "Users are already friends" });
+    }
+
+    // Add the friend to the user's friends list
+    user.friends.push({
+      user: friendId,
+      firstName: friend.firstName,
+      lastName: friend.lastName,
+      workouts: friend.workouts,
+    });
+    await user.save();
+
+    // Add the user to the friend's friends list
+    friend.friends.push({
+      user: userId,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      workouts: user.workouts,
+    });
+    await friend.save();
+
+    return res.status(200).json({ message: "Friend added successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export {
   authUser,
   registerUser,
@@ -317,4 +418,6 @@ export {
   deleteWorkout,
   addExercise,
   getExercises,
+  deleteExercise,
+  addFriend,
 };

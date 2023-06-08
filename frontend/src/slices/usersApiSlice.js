@@ -67,6 +67,17 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: exerciseData,
       }),
     }),
+    deleteExercise: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/workout/${data.workoutId}/exercise/${data.exerciseId}`,
+        method: "DELETE",
+      }),
+    }),
+    getUserProfile: builder.query({
+      query: () => ({
+        url: `${USERS_URL}/profile`,
+      }),
+    }),
   }),
 });
 
@@ -81,4 +92,6 @@ export const {
   useGetExercisesQuery,
   useGetWorkoutByIdQuery,
   useAddExerciseMutation,
+  useDeleteExerciseMutation,
+  useGetUserProfileQuery,
 } = usersApiSlice;
