@@ -9,3 +9,19 @@
 .exercise-delete:hover {
   cursor: pointer;
 }
+
+body {
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.workout-screen {
+  min-height: 100vh;
+}
+
+.profile-screen {
+  min-height: 100vh;
+}

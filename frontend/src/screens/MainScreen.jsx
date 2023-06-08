@@ -39,7 +39,7 @@ const MainScreen = () => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [refetch]);
 
   const handleDayChange = (e) => {
     setSelectedDay(e.target.value);
@@ -89,7 +89,7 @@ const MainScreen = () => {
   return (
     <div>
       <MainHeader />
-      <Container className="my-5">
+      <Container className="mt-5">
         <h1 className="text-center">Welcome Back, {userInfo.firstName}</h1>
         <Row>
           <Col md={6}>

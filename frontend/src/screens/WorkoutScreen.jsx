@@ -18,6 +18,7 @@ import {
   Row,
 } from "react-bootstrap";
 import { toast } from "react-toastify";
+import Message from "../components/Message";
 
 const WorkoutScreen = () => {
   const { id: workoutId } = useParams();
@@ -75,7 +76,7 @@ const WorkoutScreen = () => {
   };
 
   return (
-    <div>
+    <div className="workout-screen">
       <MainHeader />
       <Container>
         <Link className="btn btn-light mt-3" to="/mainscreen">
@@ -84,6 +85,7 @@ const WorkoutScreen = () => {
       </Container>
 
       <Container className="text-center">
+        {error && <Message variant="danger">{error}</Message>}
         {loadingGetWorkout ? <Loader /> : <h1>Your {workout.name} workout</h1>}
         {!loadingGetWorkout && (
           <div className="d-flex justify-content-center align-items-center">
@@ -125,6 +127,7 @@ const WorkoutScreen = () => {
             </Col>
           </Row>
         )}
+        {loadingDeleteExercise && <Loader />}
         <Row className="d-flex justify-content-center align-items-center">
           <Col md={8}>
             <Card className="mt-5 pb-5">
@@ -161,6 +164,7 @@ const WorkoutScreen = () => {
                       />
                     </Form.Group>
                     <Button type="submit">Add Exercise</Button>
+                    {loadingAddExercise && <Loader />}
                   </Form>
                 </Col>
               </Row>
