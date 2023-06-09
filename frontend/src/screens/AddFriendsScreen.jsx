@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import MainHeader from "../components/MainHeader";
 import {
   useAddFriendMutation,
+  useGetUserProfileQuery,
   useGetUsersQuery,
 } from "../slices/usersApiSlice";
 import Loader from "../components/Loader";
@@ -18,76 +19,162 @@ import { ListItemSecondaryAction } from "@mui/material";
 import Button from "@mui/material/Button";
 import { toast } from "react-toastify";
 import Message from "../components/Message";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const AddFriendsScreen = () => {
-  const { data: users, isLoading, refetch, error } = useGetUsersQuery();
+  const {
+    data: users,
+    isLoading: isLoadingUsers,
+    error: usersError,
+  } = useGetUsersQuery();
+
+  const { userInfo } = useSelector((state) => state.auth);
 
   const [addFriend, { isLoading: loadingAddFriend }] = useAddFriendMutation();
+
+  const {
+    data: userProfile,
+    isLoading: isLoadingProfile,
+    refetch: refetchProfile,
+  } = useGetUserProfileQuery();
 
   const handleAddFriendClick = async (userId) => {
     try {
       await addFriend(userId);
       toast.success("Successfully added friend");
-      refetch();
+      refetchProfile();
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
   };
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  // Get the location object from React Router
+  const location = useLocation();
+
+  // Determine the previous page path
+  const previousPagePath = new URLSearchParams(location.search).get("prev");
+
+  if (isLoadingUsers || isLoadingProfile) {
+    return (
+      <div>
+        <MainHeader />
+        <Link
+          className="btn btn-light my-4 mx-5"
+          to={previousPagePath || "/profile"}
+        >
+          Go Back
+        </Link>
+        <Container className="mt-4 mb-2">
+          <Loader />
+        </Container>
+      </div>
+    );
+  }
+
+  if (usersError) {
+    return (
+      <div>
+        <MainHeader />
+        <Link
+          className="btn btn-light my-4 mx-5"
+          to={previousPagePath || "/profile"}
+        >
+          Go Back
+        </Link>
+        <Container className="mt-4 mb-2">
+          <Message variant="danger">{usersError}</Message>
+        </Container>
+      </div>
+    );
+  }
+
+  const filteredUsers = users.filter((user) => {
+    const fullName = `${user.firstName} ${user.lastName}`;
+    return fullName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
   return (
     <div>
       <MainHeader />
-      <Link className="btn btn-light my-4 mx-5" to="/profile">
+      <Link
+        className="btn btn-light my-4 mx-5"
+        to={previousPagePath || "/profile"}
+      >
         Go Back
       </Link>
       <Container className="mt-4 mb-2">
-        <SearchBox />
+        <SearchBox onSearch={handleSearch} />
         {loadingAddFriend && <Loader />}
-        {error && <Message variant="danger">{error}</Message>}
+        <Typography variant="h3">Users</Typography>
         <List>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            users.map((user) => (
-              <div key={user._id}>
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar alt={user.firstName} src="" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      <Typography sx={{ fontWeight: "bold" }} variant="body1">
-                        {user.firstName + " " + user.lastName}
-                      </Typography>
-                    }
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: "inline" }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                        >
-                          {user.workouts.length} workouts
-                        </Typography>
-                      </React.Fragment>
-                    }
-                  />
-                  <ListItemSecondaryAction>
-                    <Button
-                      onClick={() => handleAddFriendClick(user._id)}
-                      color="primary"
+          {filteredUsers.map((user) => {
+            const isFriend = userProfile.friends.some(
+              (friend) => friend.user === user._id
+            );
+
+            if (userInfo._id !== user._id && !isFriend) {
+              return (
+                <div key={user._id}>
+                  <ListItem alignItems="flex-start">
+                    <Link
+                      style={{ textDecoration: "none", color: "black" }}
+                      to={`/profile/friends/${user._id}?prev=/profile/addfriends`}
                     >
-                      Add
-                    </Button>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider variant="inset" component="li" />
-              </div>
-            ))
-          )}
+                      <ListItemAvatar>
+                        <Avatar alt={user.firstName} src="" />
+                      </ListItemAvatar>
+                    </Link>
+                    <Link
+                      style={{ textDecoration: "none", color: "black" }}
+                      to={`/profile/friends/${user._id}?prev=/profile/addfriends`}
+                    >
+                      <ListItemText
+                        primary={
+                          <Typography
+                            sx={{ fontWeight: "bold" }}
+                            variant="body1"
+                          >
+                            {user.firstName + " " + user.lastName}
+                          </Typography>
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              sx={{ display: "inline" }}
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                            >
+                              {user.workouts.length} workouts
+                            </Typography>
+                          </React.Fragment>
+                        }
+                      />
+                    </Link>
+                    <ListItemSecondaryAction>
+                      <Button
+                        onClick={() => handleAddFriendClick(user._id)}
+                        color="primary"
+                      >
+                        Add
+                      </Button>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                  <Divider variant="inset" component="li" />
+                </div>
+              );
+            }
+            return null; // Render nothing if ids match
+          })}
         </List>
+        {isLoadingProfile && <Loader />}
       </Container>
     </div>
   );

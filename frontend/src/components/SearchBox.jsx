@@ -1,22 +1,24 @@
 import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
-const SearchBox = () => {
+const SearchBox = ({ onSearch }) => {
   const [keyword, setKeyword] = useState("");
 
+  const handleSearch = (e) => {
+    setKeyword(e.target.value); //setKyword anytime input changes
+    onSearch(e.target.value); //call onSearch callback function anytime input changes
+  };
+
   return (
-    <Form className="d-flex">
+    <Form className="d-flex mb-4">
       <Form.Control
         type="text"
         name="q"
-        onChange={(e) => setKeyword(e.target.value)}
+        onChange={handleSearch}
         value={keyword}
-        placeholder="Search friends..."
+        placeholder="Type to search for friends by name..."
         className="mr-sm-2 ms-sm-5"
       ></Form.Control>
-      <Button type="submit" variant="outline-light" className="p-2 mx-2">
-        Search
-      </Button>
     </Form>
   );
 };

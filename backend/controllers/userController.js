@@ -379,7 +379,8 @@ const addFriend = asyncHandler(async (req, res) => {
       (friend) => friend.user.toString() === userId
     );
     if (isUserFriend || isFriendFriend) {
-      return res.status(400).json({ message: "Users are already friends" });
+      res.status(400);
+      throw new Error("Already friends");
     }
 
     // Add the friend to the user's friends list
@@ -400,7 +401,16 @@ const addFriend = asyncHandler(async (req, res) => {
     });
     await friend.save();
 
-    return res.status(200).json({ message: "Friend added successfully" });
+    return res.status(200).json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      height: user.height,
+      weight: user.weight,
+      workouts: user.workouts,
+      friends: user.friends,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }

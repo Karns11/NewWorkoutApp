@@ -101,7 +101,7 @@ const ProfileScreen = () => {
               </Col>
             </Row>
 
-            <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+            <div style={{ maxHeight: "620px", overflowY: "auto" }}>
               <List
                 sx={{
                   width: "100%",
@@ -116,7 +116,7 @@ const ProfileScreen = () => {
                     <Link
                       key={friend.user}
                       style={{ textDecoration: "none", color: "black" }}
-                      to={`/profile/friends/${friend.user}`}
+                      to={`/profile/friends/${friend.user}?prev=/profile`}
                     >
                       <div>
                         <ListItem alignItems="flex-start">

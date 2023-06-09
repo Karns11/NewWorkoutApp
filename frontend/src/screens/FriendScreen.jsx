@@ -1,6 +1,6 @@
 import React from "react";
 import MainHeader from "../components/MainHeader";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useGetFriendByIdQuery } from "../slices/usersApiSlice";
 import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import Loader from "../components/Loader";
@@ -20,10 +20,19 @@ const FriendScreen = () => {
     "sunday",
   ];
 
+  // Get the location object from React Router
+  const location = useLocation();
+
+  // Determine the previous page path
+  const previousPagePath = new URLSearchParams(location.search).get("prev");
+
   return (
     <div>
       <MainHeader />
-      <Link className="btn btn-light my-4 mx-5" to="/profile">
+      <Link
+        className="btn btn-light my-4 mx-5"
+        to={previousPagePath || "/profile"}
+      >
         Go Back
       </Link>
       {isLoading ? (
