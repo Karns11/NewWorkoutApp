@@ -406,6 +406,39 @@ const addFriend = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Get users
+// @route GET /api/users
+// @access Private/Admin
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.status(200).json(users);
+});
+
+// @desc Get friend by Id
+// @route GET /api/users/friends/:friendId
+// @access Private/Admin
+const getFriendById = asyncHandler(async (req, res) => {
+  const { friendId } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const friend = await User.findById(friendId).select("-friends");
+    if (!friend) {
+      return res.status(404).json({ message: "Friend not found" });
+    }
+
+    res.status(200).json(friend);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export {
   authUser,
   registerUser,
@@ -420,4 +453,6 @@ export {
   getExercises,
   deleteExercise,
   addFriend,
+  getUsers,
+  getFriendById,
 };

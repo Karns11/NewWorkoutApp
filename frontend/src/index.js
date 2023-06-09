@@ -19,6 +19,8 @@ import MainScreen from "./screens/MainScreen";
 import PrivateRoute from "./components/PrivateRoute";
 import ProfileScreen from "./screens/ProfileScreen";
 import WorkoutScreen from "./screens/WorkoutScreen";
+import AddFriendsScreen from "./screens/AddFriendsScreen";
+import FriendScreen from "./screens/FriendScreen";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +32,8 @@ const router = createBrowserRouter(
         <Route path="/mainscreen" element={<MainScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/users/workout/:id" element={<WorkoutScreen />} />
+        <Route path="/profile/addfriends" element={<AddFriendsScreen />} />
+        <Route path="/profile/friends/:friendId" element={<FriendScreen />} />
       </Route>
     </Route>
   )

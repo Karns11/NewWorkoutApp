@@ -78,6 +78,22 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/profile`,
       }),
     }),
+    getUsers: builder.query({
+      query: () => ({
+        url: `${USERS_URL}`,
+      }),
+    }),
+    addFriend: builder.mutation({
+      query: (friendId) => ({
+        url: `${USERS_URL}/friends/${friendId}`,
+        method: "POST",
+      }),
+    }),
+    getFriendById: builder.query({
+      query: (friendId) => ({
+        url: `${USERS_URL}/friends/${friendId}`,
+      }),
+    }),
   }),
 });
 
@@ -94,4 +110,7 @@ export const {
   useAddExerciseMutation,
   useDeleteExerciseMutation,
   useGetUserProfileQuery,
+  useGetUsersQuery,
+  useAddFriendMutation,
+  useGetFriendByIdQuery,
 } = usersApiSlice;

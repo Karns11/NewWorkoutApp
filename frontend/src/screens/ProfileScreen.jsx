@@ -10,7 +10,6 @@ import {
 } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { Link } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -91,6 +90,71 @@ const ProfileScreen = () => {
       <Container>
         <Row>
           <Col md={3}>
+            <Row>
+              <Col>
+                <h3>Friends</h3>
+              </Col>
+              <Col>
+                <Link className="btn btn-primary" to={"/profile/addfriends"}>
+                  Add friends
+                </Link>
+              </Col>
+            </Row>
+
+            <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+              <List
+                sx={{
+                  width: "100%",
+                  maxWidth: "100%",
+                  bgcolor: "background.paper",
+                }}
+              >
+                {loadingGetProfile ? (
+                  <Loader />
+                ) : (
+                  userProfile.friends.map((friend) => (
+                    <Link
+                      key={friend.user}
+                      style={{ textDecoration: "none", color: "black" }}
+                      to={`/profile/friends/${friend.user}`}
+                    >
+                      <div>
+                        <ListItem alignItems="flex-start">
+                          <ListItemAvatar>
+                            <Avatar alt={friend.firstName} src="" />
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              <Typography
+                                sx={{ fontWeight: "bold" }}
+                                variant="body1"
+                              >
+                                {friend.firstName + " " + friend.lastName}
+                              </Typography>
+                            }
+                            secondary={
+                              <React.Fragment>
+                                <Typography
+                                  sx={{ display: "inline" }}
+                                  component="span"
+                                  variant="body2"
+                                  color="text.primary"
+                                >
+                                  {friend.workouts.length} workouts
+                                </Typography>
+                              </React.Fragment>
+                            }
+                          />
+                        </ListItem>
+                        <Divider variant="inset" component="li" />
+                      </div>
+                    </Link>
+                  ))
+                )}
+              </List>
+            </div>
+          </Col>
+          <Col md={9}>
             <h2 className="mt-1">User Profile</h2>
 
             <Form onSubmit={submitHandler}>
@@ -169,62 +233,6 @@ const ProfileScreen = () => {
               </Button>
               {loadingUpdateProfile && <Loader />}
             </Form>
-          </Col>
-          <Col md={9}>
-            <h3>Friends</h3>
-            {/* {loadingGetProfile ? (
-              <Loader />
-            ) : (
-              userProfile.friends.map((friend) => (
-                <li key={friend._id}>
-                  {friend.firstName} {friend.lastName}
-                </li>
-              ))
-            )} */}
-            <List
-              sx={{
-                width: "100%",
-                maxWidth: "100%",
-                bgcolor: "background.paper",
-              }}
-            >
-              {loadingGetProfile ? (
-                <Loader />
-              ) : (
-                userProfile.friends.map((friend) => (
-                  <div key={friend._id}>
-                    <ListItem alignItems="flex-start">
-                      <ListItemAvatar>
-                        <Avatar alt={friend.firstName} src="" />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            sx={{ fontWeight: "bold" }}
-                            variant="body1"
-                          >
-                            {friend.firstName + " " + friend.lastName}
-                          </Typography>
-                        }
-                        secondary={
-                          <React.Fragment>
-                            <Typography
-                              sx={{ display: "inline" }}
-                              component="span"
-                              variant="body2"
-                              color="text.primary"
-                            >
-                              Manage friends...
-                            </Typography>
-                          </React.Fragment>
-                        }
-                      />
-                    </ListItem>
-                    <Divider variant="inset" component="li" />
-                  </div>
-                ))
-              )}
-            </List>
           </Col>
         </Row>
       </Container>

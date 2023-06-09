@@ -160,6 +160,7 @@ const MainScreen = () => {
             </Card>
           </Col>
         </Row>
+
         <Row>
           <Col>
             {workouts && workouts.length === 0 ? (
