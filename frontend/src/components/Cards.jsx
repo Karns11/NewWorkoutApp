@@ -48,12 +48,14 @@ const Cards = () => {
         </div>
         <div className="w-full shadow-xl flex flex-col p-4 my-4 rounded-lg hover:scale-105 duration-300">
           {/* <img className='w-20 mx-auto mt-[-3rem] bg-white' src={Triple} alt="/" /> */}
-          <h2 className="text-2xl font-bold text-center py-8">Reminders</h2>
+          <h2 className="text-2xl font-bold text-center py-8">
+            Categorization
+          </h2>
           <p className="text-center text-4xl font-bold">SWOLE</p>
           <div className="text-center font-medium">
-            <p className="py-2 border-b mx-8 mt-8">Never miss a workout</p>
-            <p className="py-2 border-b mx-8">Set reminders</p>
-            <p className="py-2 border-b mx-8">Stay on top of your workouts</p>
+            <p className="py-2 border-b mx-8 mt-8">Categorize by day</p>
+            <p className="py-2 border-b mx-8">Categorize by workout</p>
+            <p className="py-2 border-b mx-8">Categorize by exercise</p>
           </div>
           <button
             onClick={handleClick}

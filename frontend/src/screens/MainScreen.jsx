@@ -29,10 +29,13 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import axios from "axios";
 
 const MainScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
+  const API_KEY = "a8QKtCXDr+YhDzCuEze3sg==92yRGYcjvYNszt5X";
 
+  const [exercise, setExercise] = useState(null);
   const [aWorkout, setAWorkout] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
 
@@ -50,8 +53,33 @@ const MainScreen = () => {
   const { data: userProfile, isLoading: loadingGetProfile } =
     useGetUserProfileQuery();
 
+  const fetchExerciseData = async () => {
+    const config = {
+      headers: {
+        "X-Api-Key": API_KEY,
+      },
+    };
+    try {
+      const response = await axios.get(
+        `https://api.api-ninjas.com/v1/exercises`,
+        config
+      );
+      const exercise = response.data[0]; // Assuming the API returns an array with a single exercise
+      return exercise;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     refetch();
+    const getExerciseData = async () => {
+      const exerciseData = await fetchExerciseData();
+      setExercise(exerciseData);
+    };
+
+    getExerciseData();
   }, [refetch]);
 
   const handleDayChange = (e) => {
@@ -90,13 +118,13 @@ const MainScreen = () => {
   };
 
   const daysOfWeek = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
   ];
 
   return (
@@ -119,10 +147,6 @@ const MainScreen = () => {
                 <Card.Subtitle>
                   <h1>{userInfo && userInfo.height}"</h1>
                 </Card.Subtitle>
-                {/* <Card.Text>
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </Card.Text> */}
               </Card.Body>
             </Card>
           </Col>
@@ -138,10 +162,6 @@ const MainScreen = () => {
                 <Card.Subtitle>
                   <h1>{userInfo && userInfo.weight} lbs</h1>
                 </Card.Subtitle>
-                {/* <Card.Text>
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </Card.Text> */}
               </Card.Body>
             </Card>
           </Col>
@@ -152,24 +172,18 @@ const MainScreen = () => {
               style={{
                 boxShadow: "0px 0px 8px black",
               }}
-              className="mt-2 mb-5"
+              className="mt-2 mb-2"
             >
               <Card.Body>
                 <Card.Title className=" text-center">
                   Workout of the day
                 </Card.Title>
+
                 <Card.Subtitle>
-                  <h1 className="text-center ">Incline Hammer Curls</h1>
+                  <h1 className="text-center ">{exercise && exercise.name}</h1>
                 </Card.Subtitle>
                 <Card.Text className="text-center">
-                  Seat yourself on an incline bench with a dumbbell in each
-                  hand. You should pressed firmly against he back with your feet
-                  together. Allow the dumbbells to hang straight down at your
-                  side, holding them with a neutral grip. This will be your
-                  starting position. Initiate the movement by flexing at the
-                  elbow, attempting to keep the upper arm stationary. Continue
-                  to the top of the movement and pause, then slowly return to
-                  the start position.
+                  {exercise && exercise.instructions}
                 </Card.Text>
               </Card.Body>
             </Card>

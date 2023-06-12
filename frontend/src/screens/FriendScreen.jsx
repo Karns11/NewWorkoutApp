@@ -1,14 +1,24 @@
 import React from "react";
 import MainHeader from "../components/MainHeader";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { useGetFriendByIdQuery } from "../slices/usersApiSlice";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useDeleteFriendMutation,
+  useGetFriendByIdQuery,
+} from "../slices/usersApiSlice";
 import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import Loader from "../components/Loader";
+import { Button } from "@mui/material";
+import { toast } from "react-toastify";
 
 const FriendScreen = () => {
   const { friendId } = useParams();
 
-  const { data: friend, isLoading } = useGetFriendByIdQuery(friendId);
+  const { data: friend, isLoading, refetch } = useGetFriendByIdQuery(friendId);
+
+  const [deleteFriend, { isLoading: loadingDeleteFriend }] =
+    useDeleteFriendMutation();
+
+  const navigate = useNavigate();
 
   const daysOfWeek = [
     "monday",
@@ -26,6 +36,17 @@ const FriendScreen = () => {
   // Determine the previous page path
   const previousPagePath = new URLSearchParams(location.search).get("prev");
 
+  const deleteFriendHandler = async () => {
+    try {
+      await deleteFriend(friendId);
+      toast.success("Friend Successfully Deleted");
+      navigate("/profile");
+      refetch();
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
   return (
     <div>
       <MainHeader />
@@ -39,9 +60,22 @@ const FriendScreen = () => {
         <Loader />
       ) : (
         <Container>
-          <h1>
-            {friend && friend.firstName} {friend && friend.lastName}
-          </h1>
+          <div className="d-flex justify-content-between">
+            <h1>
+              {friend && friend.firstName} {friend && friend.lastName}
+            </h1>
+
+            <Button
+              onClick={deleteFriendHandler}
+              color="error"
+              variant="contained"
+            >
+              Delete
+            </Button>
+          </div>
+
+          {loadingDeleteFriend && <Loader />}
+
           <Row>
             <Col>
               <Card

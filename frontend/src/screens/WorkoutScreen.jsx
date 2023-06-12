@@ -9,8 +9,7 @@ import {
 } from "../slices/usersApiSlice";
 import Loader from "../components/Loader";
 import {
-  Button,
-  Card,
+  Card as BootCard,
   Col,
   Container,
   Form,
@@ -19,13 +18,36 @@ import {
 } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Message from "../components/Message";
+import {
+  CardActions,
+  CardContent,
+  Typography,
+  Button as MuiButton,
+  Box,
+  Card,
+  Modal,
+} from "@mui/material";
+import { useMediaQuery } from "@mui/material";
+import axios from "axios";
 
 const WorkoutScreen = () => {
   const { id: workoutId } = useParams();
 
+  const isMediumScreen = useMediaQuery((theme) => theme.breakpoints.up("md"));
+
+  const [selectedExercise, setSelectedExercise] = useState(null);
+  const [selectedMuscle, setSelectedMuscle] = useState("");
+  const [exercises, setExercises] = useState([]);
   const [anExercise, setAnExercise] = useState("");
-  const [reps, setReps] = useState(0);
-  const [sets, setSets] = useState(0);
+  const [reps, setReps] = useState("");
+  const [sets, setSets] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (exercise) => {
+    setSelectedExercise(exercise);
+    setAnExercise(exercise.name);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
 
   const { data, isLoading, error, refetch } = useGetExercisesQuery(workoutId);
 
@@ -53,8 +75,8 @@ const WorkoutScreen = () => {
       refetch();
       toast.success("Exercise added successfully!");
       setAnExercise("");
-      setReps(0);
-      setSets(0);
+      setReps("");
+      setSets("");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -74,6 +96,40 @@ const WorkoutScreen = () => {
       toast.error(err?.data?.message || err.error);
     }
   };
+
+  const API_KEY = "a8QKtCXDr+YhDzCuEze3sg==92yRGYcjvYNszt5X";
+
+  const handleSearch = (muscle) => {
+    const config = {
+      headers: {
+        "X-Api-Key": API_KEY,
+      },
+    };
+
+    axios
+      .get(`https://api.api-ninjas.com/v1/exercises?muscle=${muscle}`, config)
+      .then((res) => setExercises(res.data))
+      .catch((err) => console.log(err));
+  };
+
+  const muscleOptions = [
+    "abdominals",
+    "abductors",
+    "adductors",
+    "biceps",
+    "calves",
+    "chest",
+    "forearms",
+    "glutes",
+    "hamstrings",
+    "lats",
+    "lower_back",
+    "middle_back",
+    "neck",
+    "quadriceps",
+    "traps",
+    "triceps",
+  ];
 
   return (
     <div className="workout-screen">
@@ -163,7 +219,13 @@ const WorkoutScreen = () => {
                         onChange={(e) => setReps(e.target.value)}
                       />
                     </Form.Group>
-                    <Button type="submit">Add Exercise</Button>
+                    <MuiButton
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                    >
+                      Add Exercise
+                    </MuiButton>
                     {loadingAddExercise && <Loader />}
                   </Form>
                 </Col>
@@ -171,6 +233,149 @@ const WorkoutScreen = () => {
             </Card>
           </Col>
         </Row>
+        <BootCard
+          style={{ boxShadow: "0px 0px 8px black" }}
+          className="mt-5 p-2"
+        >
+          <Typography className="text-center" variant="h2">
+            Search Exercises
+          </Typography>
+          <Container className="mt-5 d-flex justify-content-center">
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+              {muscleOptions.map((muscle) => (
+                <div key={muscle} style={{ flexBasis: "12.5%" }}>
+                  <input
+                    type="radio"
+                    id={muscle}
+                    name="muscle"
+                    value={muscle}
+                    checked={selectedMuscle === muscle}
+                    onChange={(e) => setSelectedMuscle(e.target.value)}
+                  />
+                  {muscle.includes("_") ? (
+                    <label htmlFor={muscle}>{muscle.replace(/_/g, " ")}</label>
+                  ) : (
+                    <label htmlFor={muscle}>{muscle}</label>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Container>
+          <Container className="d-flex justify-content-center">
+            <MuiButton
+              onClick={() => handleSearch(selectedMuscle)}
+              variant="contained"
+              color="primary"
+            >
+              Search
+            </MuiButton>
+          </Container>
+        </BootCard>
+      </Container>
+
+      <Container className="mt-5">
+        {exercises &&
+          exercises.map((exercise, ind) => (
+            <Box
+              component="span"
+              sx={{
+                mx: "2px",
+                transform: "scale(0.8)",
+              }}
+              key={ind}
+            >
+              <Card style={{ maxWidth: "400px" }} variant="outlined">
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {exercise.name}
+                  </Typography>
+                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                    {exercise.muscle.includes("_")
+                      ? exercise.muscle.replace(/_/g, " ")
+                      : exercise.muscle}
+                  </Typography>
+                  <Typography variant="body2">
+                    {"-"}{" "}
+                    {exercise.instructions.length > 100
+                      ? exercise.instructions.substring(0, 150) + "..."
+                      : exercise.instructions}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <MuiButton
+                    onClick={() => handleOpen(exercise)}
+                    color="secondary"
+                    variant="contained"
+                    size="small"
+                  >
+                    Add Exercise
+                  </MuiButton>
+                </CardActions>
+              </Card>
+            </Box>
+          ))}
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: isMediumScreen ? 800 : "90%", // Adjust width based on screen size
+              maxWidth: 800, // Set maximum width for larger screens
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              {selectedExercise && selectedExercise.name}
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              {selectedExercise && selectedExercise.instructions}
+            </Typography>
+            <Form onSubmit={handleAddExercise}>
+              <Form.Group controlId="exerciseName" className="my-3">
+                <Form.Label>Exercise Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter exercise"
+                  value={anExercise}
+                  onChange={(e) => setAnExercise(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="sets" className="my-3">
+                <Form.Label>Sets</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter sets"
+                  value={sets}
+                  onChange={(e) => setSets(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group controlId="reps" className="my-3">
+                <Form.Label>Reps</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter reps"
+                  value={reps}
+                  onChange={(e) => setReps(e.target.value)}
+                />
+              </Form.Group>
+              <MuiButton variant="contained" color="secondary" type="submit">
+                Add Exercise
+              </MuiButton>
+              {loadingAddExercise && <Loader />}
+            </Form>
+          </Box>
+        </Modal>
       </Container>
     </div>
   );

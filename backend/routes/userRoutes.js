@@ -17,6 +17,7 @@ import {
   addFriend,
   getUsers,
   getFriendById,
+  deleteFriend,
 } from "../controllers/userController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -45,7 +46,8 @@ router
 router
   .route("/friends/:friendId")
   .post(protect, addFriend)
-  .get(protect, getFriendById);
+  .get(protect, getFriendById)
+  .delete(protect, deleteFriend);
 router.route("/").get(protect, getUsers);
 
 export default router;

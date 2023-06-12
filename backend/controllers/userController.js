@@ -426,7 +426,7 @@ const getUsers = asyncHandler(async (req, res) => {
 
 // @desc Get friend by Id
 // @route GET /api/users/friends/:friendId
-// @access Private/Admin
+// @access Private
 const getFriendById = asyncHandler(async (req, res) => {
   const { friendId } = req.params;
   const userId = req.user._id;
@@ -449,6 +449,45 @@ const getFriendById = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Delete friend
+// @route GET /api/users/friends/:friendId
+// @access Private
+const deleteFriend = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user._id; // Assuming the user ID is provided as a URL parameter
+    const friendId = req.params.friendId; // Assuming the friend ID is provided as a URL parameter
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Find the friend by ID in the user's friends array
+    const friendIndex = user.friends.findIndex(
+      (friend) => friend.user.toString() === friendId
+    );
+
+    // Check if the friend exists
+    if (friendIndex === -1) {
+      return res.status(404).json({ error: "Friend not found" });
+    }
+
+    // Remove the friend from the friends array
+    user.friends.splice(friendIndex, 1);
+
+    // Save the updated user
+    await user.save();
+
+    return res.status(200).json({ message: "Friend deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
 export {
   authUser,
   registerUser,
@@ -465,4 +504,5 @@ export {
   addFriend,
   getUsers,
   getFriendById,
+  deleteFriend,
 };

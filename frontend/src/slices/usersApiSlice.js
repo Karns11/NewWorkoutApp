@@ -94,6 +94,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/friends/${friendId}`,
       }),
     }),
+    deleteFriend: builder.mutation({
+      query: (friendId) => ({
+        url: `${USERS_URL}/friends/${friendId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -113,4 +119,5 @@ export const {
   useGetUsersQuery,
   useAddFriendMutation,
   useGetFriendByIdQuery,
+  useDeleteFriendMutation,
 } = usersApiSlice;

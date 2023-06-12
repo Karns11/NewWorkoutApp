@@ -19,10 +19,11 @@ const Info = () => {
             Manage Your workouts Centrally
           </h1>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum
-            molestiae delectus culpa hic assumenda, voluptate reprehenderit
-            dolore autem cum ullam sed odit perspiciatis. Doloribus quos velit,
-            eveniet ex deserunt fuga?
+            LET'S FIT SWOLE allows you to categorize and manage your workouts by
+            day. This allows you to stay more organized and will help you reach
+            your fitness goals faster. Also, add specific exercises to each
+            workout or explore exercises to add to your workouts. Add freinds to
+            stay up to date with buddies and spark competition.
           </p>
           <div className="w-full flex justify-center">
             <button
