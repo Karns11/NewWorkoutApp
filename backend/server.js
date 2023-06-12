@@ -18,6 +18,7 @@ const app = express();
 // -- since we added this, now if we were to do that ^ then we get an empty object which is what we want
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public", { maxAge: 0 }));
 
 app.use(cookieParser());
 
