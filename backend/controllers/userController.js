@@ -2,6 +2,8 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModels.js";
 import generateToken from "../utils/generateToken.js";
 import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
 // @desc   Auth user/set token
 //route    POST /api/users/auth
@@ -509,7 +511,7 @@ const newsletterSignup = asyncHandler(async (req, res) => {
       {
         auth: {
           username: "nathan1",
-          password: "a1b560b7884feffe8cd29359a9d79abd-us14",
+          password: process.env.MAILCHIMP_PASSWORD,
         },
       }
     );
