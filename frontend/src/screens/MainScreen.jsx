@@ -28,6 +28,7 @@ import {
   ListItemAvatar,
   ListItemText,
   Typography,
+  Button as MuiButton,
 } from "@mui/material";
 import axios from "axios";
 
@@ -64,7 +65,7 @@ const MainScreen = () => {
         `https://api.api-ninjas.com/v1/exercises`,
         config
       );
-      const exercise = response.data[0]; // Assuming the API returns an array with a single exercise
+      const exercise = response.data[1];
       return exercise;
     } catch (error) {
       console.error(error);
@@ -143,9 +144,11 @@ const MainScreen = () => {
               className="my-2"
             >
               <Card.Body>
-                <Card.Title>Your Height</Card.Title>
+                <Typography variant="h5">Your Height</Typography>
                 <Card.Subtitle>
-                  <h1>{userInfo && userInfo.height}"</h1>
+                  <Typography variant="h3">
+                    {userInfo && userInfo.height}"
+                  </Typography>
                 </Card.Subtitle>
               </Card.Body>
             </Card>
@@ -158,9 +161,11 @@ const MainScreen = () => {
               className="my-2"
             >
               <Card.Body>
-                <Card.Title>Your Weight</Card.Title>
+                <Typography variant="h5">Your Weight</Typography>
                 <Card.Subtitle>
-                  <h1>{userInfo && userInfo.weight} lbs</h1>
+                  <Typography variant="h3">
+                    {userInfo && userInfo.weight} lbs
+                  </Typography>
                 </Card.Subtitle>
               </Card.Body>
             </Card>
@@ -175,16 +180,16 @@ const MainScreen = () => {
               className="mt-2 mb-2"
             >
               <Card.Body>
-                <Card.Title className=" text-center">
-                  Workout of the day
-                </Card.Title>
+                <Typography className="text-center mb-1" variant="h6">
+                  Workout Of The Day
+                </Typography>
 
                 <Card.Subtitle>
                   <h1 className="text-center ">{exercise && exercise.name}</h1>
                 </Card.Subtitle>
-                <Card.Text className="text-center">
+                <Typography variant="subtitle1" className="text-center">
                   {exercise && exercise.instructions}
-                </Card.Text>
+                </Typography>
               </Card.Body>
             </Card>
           </Col>
@@ -232,13 +237,14 @@ const MainScreen = () => {
                 </Row>
                 <Row>
                   <Col className="mb-2">
-                    <Button
-                      className="btn-dark"
+                    <MuiButton
+                      variant="contained"
+                      color="secondary"
                       disabled={!aWorkout && !selectedDay}
                       type="submit"
                     >
                       Add Workout
-                    </Button>
+                    </MuiButton>
                   </Col>
                   {isLoading && <Loader />}
                 </Row>
@@ -321,7 +327,9 @@ const MainScreen = () => {
               className="p-2 mt-2 mb-3"
               style={{ boxShadow: "0px 0px 8px black" }}
             >
-              <h2 className="text-center mt-1">Your Collection</h2>
+              <Typography variant="h4" className="text-center mt-1">
+                Your Collection
+              </Typography>
               {loadingGetWorkouts && <Loader></Loader>}
               {loadingDeleteWorkout && <Loader></Loader>}
               {error && <Message variant="danger">{error}</Message>}
