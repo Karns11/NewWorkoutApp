@@ -18,6 +18,7 @@ import {
   getUsers,
   getFriendById,
   deleteFriend,
+  newsletterSignup,
 } from "../controllers/userController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -49,5 +50,6 @@ router
   .get(protect, getFriendById)
   .delete(protect, deleteFriend);
 router.route("/").get(protect, getUsers);
+router.route("/newsletter").post(newsletterSignup);
 
 export default router;

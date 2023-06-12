@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModels.js";
 import generateToken from "../utils/generateToken.js";
+import axios from "axios";
 
 // @desc   Auth user/set token
 //route    POST /api/users/auth
@@ -488,6 +489,42 @@ const deleteFriend = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Signup for newsletter
+// @route POST /api/users/newsletter
+// @access Public
+const newsletterSignup = asyncHandler(async (req, res) => {
+  const email = req.body.email;
+  const data = {
+    members: [
+      {
+        email_address: email,
+        status: "subscribed",
+      },
+    ],
+  };
+  try {
+    const response = await axios.post(
+      "https://us14.api.mailchimp.com/3.0/lists/e7b4c3c7ab",
+      data,
+      {
+        auth: {
+          username: "nathan1",
+          password: "a1b560b7884feffe8cd29359a9d79abd-us14",
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      res.json({ message: "added successfully" });
+    } else {
+      res.json({ message: "Could not add to newsletter" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "Server error" });
+  }
+});
+
 export {
   authUser,
   registerUser,
@@ -505,4 +542,5 @@ export {
   getUsers,
   getFriendById,
   deleteFriend,
+  newsletterSignup,
 };

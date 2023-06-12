@@ -101,6 +101,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    addToNewsletter: builder.mutation({
+      query: (email) => ({
+        url: `${USERS_URL}/newsletter`,
+        method: "POST",
+        body: email,
+      }),
+    }),
   }),
 });
 
@@ -121,4 +128,5 @@ export const {
   useAddFriendMutation,
   useGetFriendByIdQuery,
   useDeleteFriendMutation,
+  useAddToNewsletterMutation,
 } = usersApiSlice;
