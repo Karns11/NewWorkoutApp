@@ -4,6 +4,7 @@ import MainHeader from "../components/MainHeader";
 import {
   useAddExerciseMutation,
   useDeleteExerciseMutation,
+  useGetApiKeyQuery,
   useGetExercisesQuery,
   useGetWorkoutByIdQuery,
 } from "../slices/usersApiSlice";
@@ -97,7 +98,8 @@ const WorkoutScreen = () => {
     }
   };
 
-  const API_KEY = "a8QKtCXDr+YhDzCuEze3sg==92yRGYcjvYNszt5X";
+  const { data: apiKeyData, isLoading: loadingApiKey } = useGetApiKeyQuery();
+  const API_KEY = loadingApiKey ? "" : apiKeyData?.API_KEY;
 
   const handleSearch = (muscle) => {
     const config = {

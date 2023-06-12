@@ -33,11 +33,7 @@ const ProfileScreen = () => {
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
 
-  const {
-    data: userProfile,
-    isLoading: loadingGetProfile,
-    refetch,
-  } = useGetUserProfileQuery();
+  const { refetch } = useGetUserProfileQuery();
 
   useEffect(() => {
     refetch();
@@ -109,10 +105,10 @@ const ProfileScreen = () => {
                   bgcolor: "background.paper",
                 }}
               >
-                {loadingGetProfile ? (
-                  <Loader />
+                {!userInfo.friends ? (
+                  <Typography>No friends</Typography>
                 ) : (
-                  userProfile.friends.map((friend) => (
+                  userInfo.friends.map((friend) => (
                     <Link
                       key={friend.user}
                       style={{ textDecoration: "none", color: "black" }}
@@ -132,18 +128,18 @@ const ProfileScreen = () => {
                                 {friend.firstName + " " + friend.lastName}
                               </Typography>
                             }
-                            secondary={
-                              <React.Fragment>
-                                <Typography
-                                  sx={{ display: "inline" }}
-                                  component="span"
-                                  variant="body2"
-                                  color="text.primary"
-                                >
-                                  {friend.workouts.length} workouts
-                                </Typography>
-                              </React.Fragment>
-                            }
+                            // secondary={
+                            //   <React.Fragment>
+                            //     <Typography
+                            //       sx={{ display: "inline" }}
+                            //       component="span"
+                            //       variant="body2"
+                            //       color="text.primary"
+                            //     >
+                            //       {friend.workouts.length} workouts
+                            //     </Typography>
+                            //   </React.Fragment>
+                            // }
                           />
                         </ListItem>
                         <Divider variant="inset" component="li" />

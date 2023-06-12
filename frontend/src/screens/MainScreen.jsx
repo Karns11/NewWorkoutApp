@@ -9,11 +9,11 @@ import {
   ListGroup,
   Row,
 } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   useAddWorkoutMutation,
   useDeleteWorkoutMutation,
-  useGetUserProfileQuery,
+  useGetApiKeyQuery,
   useGetWorkoutsQuery,
 } from "../slices/usersApiSlice";
 import { toast } from "react-toastify";
@@ -31,14 +31,16 @@ import {
   Button as MuiButton,
 } from "@mui/material";
 import axios from "axios";
+import { setCredentials } from "../slices/authSlice";
 
 const MainScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
-  const API_KEY = "a8QKtCXDr+YhDzCuEze3sg==92yRGYcjvYNszt5X";
 
   const [exercise, setExercise] = useState(null);
   const [aWorkout, setAWorkout] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
+
+  const dispatch = useDispatch();
 
   const {
     data: workouts,
@@ -51,13 +53,12 @@ const MainScreen = () => {
   const [deleteWorkout, { isLoading: loadingDeleteWorkout }] =
     useDeleteWorkoutMutation();
 
-  const { data: userProfile, isLoading: loadingGetProfile } =
-    useGetUserProfileQuery();
+  const { data, isLoading: loadingApiKey } = useGetApiKeyQuery();
 
-  const fetchExerciseData = async () => {
+  const fetchExerciseData = async (apiKey) => {
     const config = {
       headers: {
-        "X-Api-Key": API_KEY,
+        "X-Api-Key": apiKey,
       },
     };
     try {
@@ -75,13 +76,14 @@ const MainScreen = () => {
 
   useEffect(() => {
     refetch();
-    const getExerciseData = async () => {
-      const exerciseData = await fetchExerciseData();
-      setExercise(exerciseData);
+    const fetchData = async () => {
+      if (!loadingApiKey && data && data.API_KEY) {
+        const exerciseData = await fetchExerciseData(data.API_KEY);
+        setExercise(exerciseData);
+      }
     };
-
-    getExerciseData();
-  }, [refetch]);
+    fetchData();
+  }, [refetch, loadingApiKey, data]);
 
   const handleDayChange = (e) => {
     setSelectedDay(e.target.value);
@@ -95,7 +97,11 @@ const MainScreen = () => {
       toast.error("Please select a day for your workout");
     } else {
       try {
-        await addWorkout({ workoutName: aWorkout, workoutDay: selectedDay });
+        const res = await addWorkout({
+          workoutName: aWorkout,
+          workoutDay: selectedDay,
+        });
+        dispatch(setCredentials({ ...res.data }));
         refetch();
         setAWorkout("");
         setSelectedDay("");
@@ -109,7 +115,8 @@ const MainScreen = () => {
   const deleteWorkoutHandler = async (workoutId) => {
     if (window.confirm("Are you sure")) {
       try {
-        await deleteWorkout(workoutId);
+        const res = await deleteWorkout(workoutId);
+        dispatch(setCredentials({ ...res.data }));
         refetch();
         toast.success("Workout successfully deleted");
       } catch (err) {
@@ -183,6 +190,8 @@ const MainScreen = () => {
                 <Typography className="text-center mb-1" variant="h6">
                   Workout Of The Day
                 </Typography>
+
+                {loadingApiKey && <Loader />}
 
                 <Card.Subtitle>
                   <h1 className="text-center ">{exercise && exercise.name}</h1>
@@ -274,10 +283,10 @@ const MainScreen = () => {
 
               <div style={{ maxHeight: "310px", overflowY: "auto" }}>
                 <List>
-                  {loadingGetProfile ? (
-                    <Loader />
+                  {!userInfo.friends ? (
+                    <Typography>No friends</Typography>
                   ) : (
-                    userProfile.friends.map((friend) => (
+                    userInfo.friends.map((friend) => (
                       <Link
                         key={friend.user}
                         style={{ textDecoration: "none", color: "black" }}
@@ -297,18 +306,18 @@ const MainScreen = () => {
                                   {friend.firstName + " " + friend.lastName}
                                 </Typography>
                               }
-                              secondary={
-                                <React.Fragment>
-                                  <Typography
-                                    sx={{ display: "inline" }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                  >
-                                    {friend.workouts.length} workouts
-                                  </Typography>
-                                </React.Fragment>
-                              }
+                              // secondary={
+                              //   <React.Fragment>
+                              //     <Typography
+                              //       sx={{ display: "inline" }}
+                              //       component="span"
+                              //       variant="body2"
+                              //       color="text.primary"
+                              //     >
+                              //       {friend.workouts.length} workouts
+                              //     </Typography>
+                              //   </React.Fragment>
+                              // }
                             />
                           </ListItem>
                           <Divider variant="inset" component="li" />

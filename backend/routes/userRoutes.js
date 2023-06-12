@@ -19,6 +19,7 @@ import {
   getFriendById,
   deleteFriend,
   newsletterSignup,
+  getApiKey,
 } from "../controllers/userController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -51,5 +52,6 @@ router
   .delete(protect, deleteFriend);
 router.route("/").get(protect, getUsers);
 router.route("/newsletter").post(newsletterSignup);
+router.route("/api-key").get(protect, getApiKey);
 
 export default router;

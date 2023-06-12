@@ -10,9 +10,12 @@ import {
   Box,
   Card,
 } from "@mui/material";
+import { useGetApiKeyQuery } from "../slices/usersApiSlice";
 
 const AddWorkoutsScreen = () => {
-  const API_KEY = "a8QKtCXDr+YhDzCuEze3sg==92yRGYcjvYNszt5X";
+  const { data, isLoading: loadingApiKey } = useGetApiKeyQuery();
+  const API_KEY = loadingApiKey ? "" : data?.API_KEY;
+  console.log(API_KEY);
 
   const [selectedMuscle, setSelectedMuscle] = useState("");
   const [exercises, setExercises] = useState([]);

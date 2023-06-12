@@ -108,6 +108,11 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: email,
       }),
     }),
+    getApiKey: builder.query({
+      query: () => ({
+        url: `${USERS_URL}/api-key`,
+      }),
+    }),
   }),
 });
 
@@ -129,4 +134,5 @@ export const {
   useGetFriendByIdQuery,
   useDeleteFriendMutation,
   useAddToNewsletterMutation,
+  useGetApiKeyQuery,
 } = usersApiSlice;

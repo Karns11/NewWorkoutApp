@@ -20,9 +20,11 @@ import Button from "@mui/material/Button";
 import { toast } from "react-toastify";
 import Message from "../components/Message";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "../slices/authSlice";
 
 const AddFriendsScreen = () => {
+  const dispatch = useDispatch();
   const {
     data: users,
     isLoading: isLoadingUsers,
@@ -41,7 +43,8 @@ const AddFriendsScreen = () => {
 
   const handleAddFriendClick = async (userId) => {
     try {
-      await addFriend(userId);
+      const res = await addFriend(userId);
+      dispatch(setCredentials({ ...res.data }));
       toast.success("Successfully added friend");
       refetchProfile();
     } catch (err) {

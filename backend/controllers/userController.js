@@ -23,6 +23,7 @@ const authUser = asyncHandler(async (req, res) => {
       height: user.height,
       weight: user.weight,
       workouts: user.workouts,
+      friends: user.friends,
     });
   } else {
     res.status(401);
@@ -62,6 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
       height: user.height,
       weight: user.weight,
       workouts: user.workouts,
+      friends: user.friends,
     });
   } else {
     res.status(400);
@@ -126,6 +128,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       height: updatedUser.height,
       weight: updatedUser.weight,
       workouts: updatedUser.workouts,
+      friends: updatedUser.friends,
     });
   } else {
     res.status(404);
@@ -202,6 +205,7 @@ const addWorkout = asyncHandler(async (req, res) => {
       lastName: user.lastname,
       height: user.height,
       weight: user.weight,
+      friends: user.friends,
       workouts: user.workouts,
     });
   } catch (error) {
@@ -228,9 +232,15 @@ const deleteWorkout = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Workout deleted successfully", user });
+    return res.status(200).json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastname,
+      height: user.height,
+      weight: user.weight,
+      friends: user.friends,
+      workouts: user.workouts,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }
@@ -460,6 +470,28 @@ const deleteFriend = asyncHandler(async (req, res) => {
     const userId = req.user._id; // Assuming the user ID is provided as a URL parameter
     const friendId = req.params.friendId; // Assuming the friend ID is provided as a URL parameter
 
+    // Find the friend by ID
+    const friend = await User.findById(friendId);
+
+    // Check if the friend exists
+    if (!friend) {
+      return res.status(404).json({ error: "Friend not found" });
+    }
+
+    // Find the user by ID in the friend's friends array
+    const userIndex = friend.friends.findIndex(
+      (friend) => friend.user.toString() === userId.toString()
+    );
+
+    // Check if the user exists in the friend's friends array
+    if (userIndex !== -1) {
+      // Remove the user from the friend's friends array
+      friend.friends.splice(userIndex, 1);
+
+      // Save the updated friend
+      await friend.save();
+    }
+
     // Find the user by ID
     const user = await User.findById(userId);
 
@@ -484,7 +516,16 @@ const deleteFriend = asyncHandler(async (req, res) => {
     // Save the updated user
     await user.save();
 
-    return res.status(200).json({ message: "Friend deleted successfully" });
+    return res.status(200).json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      height: user.height,
+      weight: user.weight,
+      workouts: user.workouts,
+      friends: user.friends,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Server error" });
@@ -527,6 +568,14 @@ const newsletterSignup = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Get API_KEY
+// @route Get /api/users/api-key
+// @access Private
+const getApiKey = asyncHandler(async (req, res) => {
+  const API_KEY = process.env.API_KEY;
+  res.json({ API_KEY });
+});
+
 export {
   authUser,
   registerUser,
@@ -545,4 +594,5 @@ export {
   getFriendById,
   deleteFriend,
   newsletterSignup,
+  getApiKey,
 };

@@ -9,9 +9,13 @@ import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import Loader from "../components/Loader";
 import { Button } from "@mui/material";
 import { toast } from "react-toastify";
+import { setCredentials } from "../slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const FriendScreen = () => {
   const { friendId } = useParams();
+
+  const dispatch = useDispatch();
 
   const { data: friend, isLoading, refetch } = useGetFriendByIdQuery(friendId);
 
@@ -38,7 +42,8 @@ const FriendScreen = () => {
 
   const deleteFriendHandler = async () => {
     try {
-      await deleteFriend(friendId);
+      const res = await deleteFriend(friendId);
+      dispatch(setCredentials({ ...res.data }));
       toast.success("Friend Successfully Deleted");
       navigate("/profile");
       refetch();
