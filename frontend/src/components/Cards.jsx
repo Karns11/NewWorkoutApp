@@ -34,10 +34,8 @@ const Cards = () => {
           <p className="text-center text-4xl font-bold">FIT</p>
           <div className="text-center font-medium">
             <p className="py-2 border-b mx-8 mt-8">Unlimited Customization</p>
-            <p className="py-2 border-b mx-8">Categorize by day</p>
-            <p className="py-2 border-b mx-8">
-              Create as many workouts as needed
-            </p>
+            <p className="py-2 border-b mx-8">Unlimited Workouts</p>
+            <p className="py-2 border-b mx-8">Unlimited Potential</p>
           </div>
           <button
             onClick={handleClick}

@@ -59,10 +59,6 @@ const Newslettter = () => {
             </Form>
             {isLoading && <Loader />}
           </div>
-          <p className="text-center">
-            We care bout the protection of your data. Read our{" "}
-            <span className="text-[#00df9a]">Privacy Policy.</span>
-          </p>
         </div>
       </div>
       {error && <Message variant="danger">{error}</Message>}

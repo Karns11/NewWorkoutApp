@@ -14,9 +14,24 @@ const Navbar = () => {
         LET'S FIT SWOLE
       </h1>
       <ul className="hidden md:flex">
-        <li className="p-4">Home</li>
-        <li className="p-4">About</li>
-        <li className="p-4">Contact</li>
+        <li className="p-4">
+          <a style={{ textDecoration: "none", color: "white" }} href="#Home">
+            Home
+          </a>
+        </li>
+        <li className="p-4">
+          <a style={{ textDecoration: "none", color: "white" }} href="#About">
+            About
+          </a>
+        </li>
+        <li className="p-4">
+          <a
+            style={{ textDecoration: "none", color: "white" }}
+            href="https://natekarnsportfolio.netlify.app/"
+          >
+            Contact
+          </a>
+        </li>
       </ul>
       <div onClick={handleNav} className="block md:hidden">
         {nav ? <AiOutlineClose size={20} /> : <AiOutlineMenu size={20} />}
@@ -28,10 +43,10 @@ const Navbar = () => {
             : "ease-in-out duration-500 fixed left-[-100%]"
         }
       >
-        <h1 className="w-full text-3xl font-bold text-[#00df9a] m-4">REACT.</h1>
+        <h1 className="w-full text-3xl font-bold text-[#00df9a] m-4">
+          LET'S FIT SWOLE
+        </h1>
         <li className="p-4 border-b border-gray-600">Home</li>
-        <li className="p-4 border-b border-gray-600">Company</li>
-        <li className="p-4 border-b border-gray-600">Resources</li>
         <li className="p-4 border-b border-gray-600">About</li>
         <li className="p-4">Contact</li>
       </ul>
