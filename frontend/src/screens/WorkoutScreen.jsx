@@ -28,13 +28,10 @@ import {
   Card,
   Modal,
 } from "@mui/material";
-import { useMediaQuery } from "@mui/material";
 import axios from "axios";
 
 const WorkoutScreen = () => {
   const { id: workoutId } = useParams();
-
-  const isMediumScreen = useMediaQuery((theme) => theme.breakpoints.up("md"));
 
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [selectedMuscle, setSelectedMuscle] = useState("");
@@ -323,12 +320,12 @@ const WorkoutScreen = () => {
           aria-describedby="modal-modal-description"
         >
           <Box
+            className="modal-box"
             sx={{
               position: "absolute",
               top: "50%",
               left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: isMediumScreen ? 800 : "90%", // Adjust width based on screen size
+              transform: "translate(-50%, -50%)", // Adjust width based on screen size
               maxWidth: 800, // Set maximum width for larger screens
               bgcolor: "background.paper",
               border: "2px solid #000",

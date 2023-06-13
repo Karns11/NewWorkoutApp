@@ -25,3 +25,9 @@ body {
 .profile-screen {
   min-height: 100vh;
 }
+
+@media (max-width: 768px) {
+  .modal-box {
+    width: 400px;
+  }
+}

@@ -21,9 +21,6 @@ import ProfileScreen from "./screens/ProfileScreen";
 import WorkoutScreen from "./screens/WorkoutScreen";
 import AddFriendsScreen from "./screens/AddFriendsScreen";
 import FriendScreen from "./screens/FriendScreen";
-import { ThemeProvider, createTheme } from "@mui/material";
-
-const theme = createTheme();
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,11 +43,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <HelmetProvider>
-      <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <RouterProvider router={router} />
-        </Provider>
-      </ThemeProvider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </HelmetProvider>
   </React.StrictMode>
 );
