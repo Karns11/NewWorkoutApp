@@ -6,8 +6,7 @@ import { useRegisterMutation } from "../slices/usersApiSlice";
 import { toast } from "react-toastify";
 import { setCredentials } from "../slices/authSlice";
 import Loader from "../components/Loader";
-// import { CssBaseline, Grid, Typography } from "@mui/material";
-import FormContainer from "../components/FormContainer";
+import { CssBaseline, Grid, Typography } from "@mui/material";
 
 const RegisterScreen = () => {
   const [firstName, setFirstName] = useState("");
@@ -60,7 +59,7 @@ const RegisterScreen = () => {
 
   return (
     <>
-      <Container className="my-4">
+      {/* <Container className="my-4">
         <Link className="btn btn-light" to="/">
           Go Home
         </Link>
@@ -149,8 +148,8 @@ const RegisterScreen = () => {
             Already have an account? <Link to="/login">Login</Link>
           </Col>
         </Row>
-      </FormContainer>
-      {/* <Grid container component="main" sx={{ height: "100vh" }}>
+      </FormContainer> */}
+      <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
           item
@@ -265,7 +264,7 @@ const RegisterScreen = () => {
             </Row>
           </Container>
         </Grid>
-      </Grid> */}
+      </Grid>
     </>
   );
 };
