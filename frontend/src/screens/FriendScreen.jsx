@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   useDeleteFriendMutation,
   useGetFriendByIdQuery,
+  useGetUserProfileQuery,
 } from "../slices/usersApiSlice";
 import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import Loader from "../components/Loader";
@@ -21,6 +22,10 @@ const FriendScreen = () => {
 
   const [deleteFriend, { isLoading: loadingDeleteFriend }] =
     useDeleteFriendMutation();
+
+  const { data: profile } = useGetUserProfileQuery();
+  const userFriends = profile.friends;
+  const isFriend = userFriends.some((friend) => friend.user === friendId);
 
   const navigate = useNavigate();
 
@@ -69,14 +74,15 @@ const FriendScreen = () => {
             <h1>
               {friend && friend.firstName} {friend && friend.lastName}
             </h1>
-
-            <Button
-              onClick={deleteFriendHandler}
-              color="error"
-              variant="contained"
-            >
-              Delete
-            </Button>
+            {isFriend && (
+              <Button
+                onClick={deleteFriendHandler}
+                color="error"
+                variant="contained"
+              >
+                Delete
+              </Button>
+            )}
           </div>
 
           {loadingDeleteFriend && <Loader />}
