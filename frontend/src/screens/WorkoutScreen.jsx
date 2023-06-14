@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import MainHeader from "../components/MainHeader";
 import {
@@ -57,6 +57,10 @@ const WorkoutScreen = () => {
 
   const [deleteExercise, { isLoading: loadingDeleteExercise }] =
     useDeleteExerciseMutation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleAddExercise = async (event) => {
     event.preventDefault();
@@ -331,11 +335,21 @@ const WorkoutScreen = () => {
               border: "2px solid #000",
               boxShadow: 24,
               p: 4,
+              overflowY: "auto", // Add scrollable behavior
+              maxHeight: "80vh", // Set maximum height for the modal content
             }}
           >
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              {selectedExercise && selectedExercise.name}
-            </Typography>
+            <Row>
+              <Col>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  {selectedExercise && selectedExercise.name}
+                </Typography>
+              </Col>
+              <Col className="modal-close-icon" onClick={handleClose} xs={1}>
+                <i className="fa-solid fa-xmark"></i>
+              </Col>
+            </Row>
+
             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
               {selectedExercise && selectedExercise.instructions}
             </Typography>

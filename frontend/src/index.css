@@ -10,6 +10,10 @@
   cursor: pointer;
 }
 
+main {
+  min-height: 90vh;
+}
+
 body {
   min-height: 100vh;
 }
@@ -43,4 +47,20 @@ body {
 
 #Home {
   min-height: 103vh;
+}
+
+.modal-close-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.modal-close-icon:hover {
+  cursor: pointer;
+  opacity: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }

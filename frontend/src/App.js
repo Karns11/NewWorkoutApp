@@ -6,7 +6,10 @@ import Footer from "./components/Footer";
 function App() {
   return (
     <div>
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
+
       <ToastContainer />
       <Footer />
     </div>
