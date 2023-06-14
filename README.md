@@ -36,5 +36,6 @@ The purpose of this application is to provide users with a platform to track the
 
 1. Clone the repository: `git clone <repository URL>`
 2. Install dependencies: `npm install`
-3. Set up the database connection and configuration
-4. Start the development server: `npm start`
+3. cd frontend: `npm install
+4. Set up the database connection and configuration
+5. Start the development server: `npm start`
