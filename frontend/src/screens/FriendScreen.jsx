@@ -23,8 +23,9 @@ const FriendScreen = () => {
   const [deleteFriend, { isLoading: loadingDeleteFriend }] =
     useDeleteFriendMutation();
 
-  const { data: profile } = useGetUserProfileQuery();
-  const userFriends = profile.friends;
+  const { data: profile, isLoading: loadingGetProfile } =
+    useGetUserProfileQuery();
+  const userFriends = profile?.friends ?? [];
   const isFriend = userFriends.some((friend) => friend.user === friendId);
 
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ const FriendScreen = () => {
             <h1>
               {friend && friend.firstName} {friend && friend.lastName}
             </h1>
-            {isFriend && (
+            {isFriend && !loadingGetProfile && (
               <Button
                 onClick={deleteFriendHandler}
                 color="error"
