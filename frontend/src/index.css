@@ -31,3 +31,12 @@ body {
     width: 400px;
   }
 }
+
+#navheader {
+  background-color: black;
+}
+
+#navBrand {
+  color: #00df9a;
+  font-weight: bold;
+}
