@@ -27,7 +27,7 @@ body {
 }
 
 .profile-screen {
-  min-height: 100vh;
+  min-height: 90vh;
 }
 
 @media (max-width: 768px) {

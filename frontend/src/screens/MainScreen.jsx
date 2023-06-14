@@ -32,6 +32,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { setCredentials } from "../slices/authSlice";
+import Footer from "../components/Footer";
 
 const MainScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -434,6 +435,7 @@ const MainScreen = () => {
           </Col>
         </Row>
       </Container>
+      <Footer />
     </div>
   );
 };
