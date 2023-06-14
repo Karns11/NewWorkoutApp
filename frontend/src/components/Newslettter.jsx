@@ -12,14 +12,25 @@ const Newslettter = () => {
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
+    if (!validateEmail(email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     try {
       await addToNewsletter({ email });
-      toast.success("Successfully signed up for newsletter");
+      toast.success("Successfully signed up for the newsletter");
       setEmail("");
     } catch (err) {
       console.log(err);
       toast.error(err?.data?.message || err.error);
     }
+  };
+
+  const validateEmail = (email) => {
+    // Regular expression to validate email address
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   return (
