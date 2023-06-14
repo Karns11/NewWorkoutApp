@@ -40,3 +40,7 @@ body {
   color: #00df9a;
   font-weight: bold;
 }
+
+#Home {
+  min-height: 103vh;
+}
