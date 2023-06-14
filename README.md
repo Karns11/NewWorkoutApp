@@ -31,6 +31,7 @@ The purpose of this application is to provide users with a platform to track the
 - jsonwebtoken
 - mongoose
 - express-async-handler
+- react-icons
 
 ## Build/Deploy Instructions
 
