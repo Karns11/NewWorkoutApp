@@ -16,7 +16,7 @@ const Hero = () => {
           THE BEST FITNESS APP ON THE MARKET
         </p>
         <h1 className="md:text-7xl sm:text-6xl text-4xl font-bold md:py-6">
-          LETS FIT SWOLE
+          LET'S FIT SWOLE
         </h1>
         <p className="md:text-2xl text-xl font-bold text-gray-500">
           TAKE YOUR WORKOUTS TO THE NEXT LEVEL
