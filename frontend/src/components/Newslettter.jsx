@@ -49,29 +49,33 @@ const Newslettter = () => {
               type="email"
               placeholder="Enter Email"
             /> */}
-            <Form onSubmit={handleNewsletterSubmit} className="w-100">
-              <Form.Group controlId="email" className="my-2">
-                <Form.Control
-                  className="p-3 flex w-full rounded-md text-black"
-                  type="email"
-                  placeholder="Enter email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-              <div className="d-flex justify-content-center">
-                <button
-                  type="submit"
-                  className="bg-[#00df9a] text-black rounded-md font-medium w-[200px] ml-4 mb-6 px-6 py-3"
-                >
-                  Notify Me
-                </button>
-              </div>
-            </Form>
-            {isLoading && <Loader />}
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <Form onSubmit={handleNewsletterSubmit} className="w-100">
+                <Form.Group controlId="email" className="my-2">
+                  <Form.Control
+                    className="p-3 flex w-full rounded-md text-black"
+                    type="email"
+                    placeholder="Enter email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  ></Form.Control>
+                </Form.Group>
+                <div className="d-flex justify-content-center">
+                  <button
+                    type="submit"
+                    className="bg-[#00df9a] text-black rounded-md font-medium w-[200px] ml-4 mb-6 px-6 py-3"
+                  >
+                    Notify Me
+                  </button>
+                </div>
+              </Form>
+            )}
           </div>
         </div>
       </div>
+
       {error && <Message variant="danger">{error}</Message>}
     </div>
   );
