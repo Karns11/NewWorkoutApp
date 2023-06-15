@@ -29,6 +29,7 @@ import {
   ListItemText,
   Typography,
   Button as MuiButton,
+  Skeleton,
 } from "@mui/material";
 import axios from "axios";
 import { setCredentials } from "../slices/authSlice";
@@ -212,27 +213,38 @@ const MainScreen = () => {
         </Row>
         <Row>
           <Col>
-            <Card
-              style={{
-                boxShadow: "0px 0px 8px black",
-              }}
-              className="mt-2 mb-2"
-            >
-              <Card.Body>
-                <Typography className="text-center mb-1" variant="h6">
-                  Workout Of The Day
-                </Typography>
+            {loadingApiKey || !exercise ? (
+              <Card
+                className="d-flex flex-column justify-content-between py-5 px-4 mt-2 mb-2 skeleton-card"
+                style={{ height: "12.9rem", boxShadow: "0px 0px 8px black" }}
+              >
+                <Skeleton variant="h6" />
+                <Skeleton variant="h1" animation="wave" />
+                <Skeleton variant="subtitle1" animation={false} />
+              </Card>
+            ) : (
+              <Card
+                style={{
+                  boxShadow: "0px 0px 8px black",
+                }}
+                className="mt-2 mb-2"
+              >
+                <Card.Body>
+                  <Typography className="text-center mb-1" variant="h6">
+                    Workout Of The Day
+                  </Typography>
 
-                {loadingApiKey && <Loader />}
-
-                <Card.Subtitle>
-                  <h1 className="text-center ">{exercise && exercise.name}</h1>
-                </Card.Subtitle>
-                <Typography variant="subtitle1" className="text-center">
-                  {exercise && exercise.instructions}
-                </Typography>
-              </Card.Body>
-            </Card>
+                  <Card.Subtitle>
+                    <Typography variant="h3" className="text-center ">
+                      {exercise && exercise.name}
+                    </Typography>
+                  </Card.Subtitle>
+                  <Typography variant="subtitle1" className="text-center">
+                    {exercise && exercise.instructions}
+                  </Typography>
+                </Card.Body>
+              </Card>
+            )}
           </Col>
         </Row>
 
