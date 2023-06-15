@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MainHeader from "../components/MainHeader";
 import {
   Button,
@@ -56,35 +56,66 @@ const MainScreen = () => {
 
   const { data, isLoading: loadingApiKey } = useGetApiKeyQuery();
 
-  const fetchExerciseData = async (apiKey) => {
-    const config = {
-      headers: {
-        "X-Api-Key": apiKey,
-      },
-    };
-    try {
-      const response = await axios.get(
-        `https://api.api-ninjas.com/v1/exercises`,
-        config
-      );
-      const exercise = response.data[1];
-      return exercise;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
+  const muscleOptions = [
+    "abdominals",
+    "abductors",
+    "adductors",
+    "biceps",
+    "calves",
+    "chest",
+    "forearms",
+    "glutes",
+    "hamstrings",
+    "lats",
+    "lower_back",
+    "middle_back",
+    "neck",
+    "quadriceps",
+    "traps",
+    "triceps",
+  ];
+
+  const dateObject = new Date();
+  const dayOfMonth = dateObject.getDate();
+
+  const muscleIndex = (dayOfMonth - 1) % muscleOptions.length;
+  const randomMuscle = muscleOptions[muscleIndex];
+
+  const fetchExerciseData = useCallback(
+    async (apiKey) => {
+      const config = {
+        headers: {
+          "X-Api-Key": apiKey,
+        },
+      };
+      try {
+        const response = await axios.get(
+          `https://api.api-ninjas.com/v1/exercises?muscle=${randomMuscle}`,
+          config
+        );
+        const responseIndex = (dayOfMonth - 1) % response.data.length;
+
+        const exercise = response.data[responseIndex];
+        return exercise;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    },
+    [dayOfMonth, randomMuscle]
+  );
 
   useEffect(() => {
-    refetch();
     const fetchData = async () => {
       if (!loadingApiKey && data && data.API_KEY) {
         const exerciseData = await fetchExerciseData(data.API_KEY);
         setExercise(exerciseData);
       }
     };
+
     fetchData();
-  }, [refetch, loadingApiKey, data]);
+    refetch();
+  }, [loadingApiKey, data, refetch, fetchExerciseData]);
 
   const handleDayChange = (e) => {
     setSelectedDay(e.target.value);

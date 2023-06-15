@@ -38,11 +38,11 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     refetch();
-    setFirstName(userInfo.firstName);
-    setLastName(userInfo.lastName);
-    setEmail(userInfo.email);
-    setHeight(userInfo.height);
-    setWeight(userInfo.weight);
+    setFirstName(userInfo.firstName || "");
+    setLastName(userInfo.lastName || "");
+    setEmail(userInfo.email || "");
+    setHeight(userInfo.height || 1);
+    setWeight(userInfo.weight || 1);
   }, [
     userInfo.email,
     userInfo.firstName,
