@@ -380,7 +380,7 @@ const MainScreen = () => {
                                   </ListGroup.Item>
                                   <ListGroup.Item>
                                     <Row>
-                                      <Col md={1}>
+                                      <Col xs={1}>
                                         <i className="fa-solid fa-calendar-days"></i>
                                       </Col>
                                       <Col>
@@ -393,7 +393,9 @@ const MainScreen = () => {
                                     <ListGroup.Item>
                                       <Row>
                                         <Col xs={4} md={4}>
-                                          <h4>Exercises:</h4>
+                                          <h4 className="exercises-title">
+                                            Exercises:
+                                          </h4>
                                         </Col>
 
                                         <Col xs={5} md={5}>

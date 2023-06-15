@@ -64,3 +64,7 @@ body {
   justify-content: center;
   border-radius: 50%;
 }
+
+.exercises-title {
+  font-size: 1.1rem;
+}
