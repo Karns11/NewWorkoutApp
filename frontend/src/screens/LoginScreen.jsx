@@ -8,7 +8,7 @@ import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
-import { CssBaseline, Grid, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -102,7 +102,7 @@ const LoginScreen = () => {
     //   </Row>
     // </div>
     <div className="register-screen">
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      {/* <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
           item
@@ -121,60 +121,58 @@ const LoginScreen = () => {
             backgroundPosition: "center",
           }}
         />
-        <Grid item xs={12} sm={8} md={5} elevation={6}>
-          <Container className="mt-3">
-            <Link className="btn btn-light" to="/">
-              Go Back
-            </Link>
-          </Container>
-          <Container className="mt-5 px-5">
-            <Typography className="text-center" component="h1" variant="h5">
-              Sign in
-            </Typography>
+        <Grid item xs={12} sm={8} md={5} elevation={6}> */}
+      <Container className="mt-3">
+        <Link className="btn btn-light" to="/">
+          Go Back
+        </Link>
+      </Container>
+      <Container className="mt-5 px-5">
+        <Typography className="text-center" component="h1" variant="h5">
+          Sign in
+        </Typography>
 
-            <Form onSubmit={submitHandler}>
-              <Form.Group controlId="email" className="my-3">
-                <Form.Label>Email Address</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId="email" className="my-3">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-              <Form.Group controlId="password" className="my-3">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-              <div className="d-flex justify-content-center">
-                <Button type="submit" variant="primary" className="mt-2">
-                  Sign In
-                </Button>
-              </div>
-              <Row className="text-center py-3">
-                <Col>
-                  New User?{" "}
-                  <Link
-                    to={
-                      redirect ? `/register?redirect=${redirect}` : "/register"
-                    }
-                  >
-                    Register
-                  </Link>
-                </Col>
-              </Row>
+          <Form.Group controlId="password" className="my-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <div className="d-flex justify-content-center">
+            <Button type="submit" variant="primary" className="mt-2">
+              Sign In
+            </Button>
+          </div>
+          <Row className="text-center py-3">
+            <Col>
+              New User?{" "}
+              <Link
+                to={redirect ? `/register?redirect=${redirect}` : "/register"}
+              >
+                Register
+              </Link>
+            </Col>
+          </Row>
 
-              {isLoading && <Loader />}
-            </Form>
-          </Container>
-        </Grid>
-      </Grid>
+          {isLoading && <Loader />}
+        </Form>
+      </Container>
+      {/* </Grid>
+      </Grid> */}
     </div>
   );
 };
