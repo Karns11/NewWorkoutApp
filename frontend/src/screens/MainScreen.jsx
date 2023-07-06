@@ -19,7 +19,7 @@ import {
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Divider,
@@ -30,6 +30,8 @@ import {
   Typography,
   Button as MuiButton,
   Skeleton,
+  Modal,
+  Box,
 } from "@mui/material";
 import axios from "axios";
 import { setCredentials } from "../slices/authSlice";
@@ -41,8 +43,15 @@ const MainScreen = () => {
   const [exercise, setExercise] = useState(null);
   const [aWorkout, setAWorkout] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (exercise) => {
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
 
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const {
     data: workouts,
@@ -158,6 +167,10 @@ const MainScreen = () => {
     }
   };
 
+  const handleEditButton = () => {
+    navigate("/profile");
+  };
+
   const daysOfWeek = [
     "Monday",
     "Tuesday",
@@ -184,7 +197,10 @@ const MainScreen = () => {
               className="my-2"
             >
               <Card.Body>
-                <Typography variant="h5">Your Height</Typography>
+                <div className="flex justify-between">
+                  <Typography variant="h5">Your Height</Typography>
+                  <MuiButton onClick={handleEditButton}>Edit</MuiButton>
+                </div>
                 <Card.Subtitle>
                   <Typography variant="h3">
                     {userInfo && userInfo.height}"
@@ -201,7 +217,10 @@ const MainScreen = () => {
               className="my-2"
             >
               <Card.Body>
-                <Typography variant="h5">Your Weight</Typography>
+                <div className="flex justify-between">
+                  <Typography variant="h5">Your Weight</Typography>
+                  <MuiButton onClick={handleEditButton}>Edit</MuiButton>
+                </div>
                 <Card.Subtitle>
                   <Typography variant="h3">
                     {userInfo && userInfo.weight} lbs
@@ -231,7 +250,7 @@ const MainScreen = () => {
               >
                 <Card.Body>
                   <Typography className="text-center mb-1" variant="h6">
-                    Workout Of The Day
+                    Exercise Of The Day
                   </Typography>
 
                   <Card.Subtitle>
@@ -242,6 +261,14 @@ const MainScreen = () => {
                   <Typography variant="subtitle1" className="text-center">
                     {exercise && exercise.instructions}
                   </Typography>
+                  <div className="flex items-center justify-end pt-2">
+                    <MuiButton
+                      color="secondary"
+                      onClick={() => handleOpen(exercise)}
+                    >
+                      Add exercise to collection
+                    </MuiButton>
+                  </div>
                 </Card.Body>
               </Card>
             )}
@@ -481,6 +508,125 @@ const MainScreen = () => {
         </Row>
       </Container>
       <Footer />
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          className="modal-box"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)", // Adjust width based on screen size
+            maxWidth: 800, // Set maximum width for larger screens
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+            overflowY: "auto", // Add scrollable behavior
+            maxHeight: "80vh", // Set maximum height for the modal content
+          }}
+        >
+          <Typography variant="h4" className="text-center mt-1">
+            Choose Workout
+          </Typography>
+          {loadingGetWorkouts && <Loader></Loader>}
+          {loadingDeleteWorkout && <Loader></Loader>}
+          {error && <Message variant="danger">{error}</Message>}
+          {workouts && (
+            <>
+              {daysOfWeek.map((day) => {
+                const filteredWorkouts = workouts.filter(
+                  (workout) => workout.day.toLowerCase() === day.toLowerCase()
+                );
+
+                return (
+                  <Row key={day}>
+                    {filteredWorkouts.length > 0 && (
+                      <h2 className="text-dark mt-2">
+                        {day.charAt(0).toUpperCase() + day.slice(1)}
+                      </h2>
+                    )}
+                    {filteredWorkouts.map((workout) => (
+                      <Col key={workout._id}>
+                        <Card id={workout._id} className="hover-card">
+                          <Link
+                            to={`/users/workout/${
+                              workout._id
+                            }?prev=workoutmodal&eod=${
+                              exercise && exercise.name
+                            }`}
+                            style={{ textDecoration: "none" }}
+                          >
+                            <ListGroup variant="flush">
+                              <ListGroup.Item>
+                                <Row>
+                                  <Col md={12}>
+                                    <h3>
+                                      {workout.name.charAt(0).toUpperCase() +
+                                        workout.name.slice(1)}
+                                    </h3>
+                                  </Col>
+                                </Row>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                <Row>
+                                  <Col xs={1}>
+                                    <i className="fa-solid fa-calendar-days"></i>
+                                  </Col>
+                                  <Col>
+                                    {workout.day.charAt(0).toUpperCase() +
+                                      workout.day.slice(1)}
+                                  </Col>
+                                </Row>
+                              </ListGroup.Item>
+                              {workout.exercises.length > 0 && (
+                                <ListGroup.Item>
+                                  <Row>
+                                    <Col xs={4} md={4}>
+                                      <h4 className="exercises-title">
+                                        Exercises:
+                                      </h4>
+                                    </Col>
+
+                                    <Col xs={5} md={5}>
+                                      {workout.exercises.map((exercise) => (
+                                        <p key={exercise._id}>
+                                          {exercise.name}
+                                        </p>
+                                      ))}
+                                    </Col>
+                                    <Col xs={3} md={3}>
+                                      {workout.exercises.map((exercise) => (
+                                        <p key={exercise._id}>
+                                          {exercise.sets} X {exercise.reps}
+                                        </p>
+                                      ))}
+                                    </Col>
+                                  </Row>
+                                </ListGroup.Item>
+                              )}
+                            </ListGroup>
+                          </Link>
+                          <Button
+                            className="btn-danger"
+                            onClick={() => deleteWorkoutHandler(workout._id)}
+                          >
+                            <i className="fa-solid fa-trash"></i> Delete
+                          </Button>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                );
+              })}
+            </>
+          )}
+        </Box>
+      </Modal>
     </div>
   );
 };
