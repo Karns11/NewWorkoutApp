@@ -437,7 +437,7 @@ const WorkoutScreen = () => {
             {loadingGetWorkout ? (
               <Loader />
             ) : (
-              <h1>Your {workout.name} workout (WorkoutModal)</h1>
+              <h1>Your {workout.name} workout</h1>
             )}
             {!loadingGetWorkout && (
               <div className="d-flex justify-content-center align-items-center">
