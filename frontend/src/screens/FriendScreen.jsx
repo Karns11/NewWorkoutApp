@@ -1,7 +1,8 @@
 import React from "react";
 import MainHeader from "../components/MainHeader";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import {
+  useAddFriendMutation,
   useDeleteFriendMutation,
   useGetFriendByIdQuery,
   useGetUserProfileQuery,
@@ -18,17 +19,22 @@ const FriendScreen = () => {
 
   const dispatch = useDispatch();
 
-  const { data: friend, isLoading, refetch } = useGetFriendByIdQuery(friendId);
+  const { data: friend, isLoading } = useGetFriendByIdQuery(friendId);
 
   const [deleteFriend, { isLoading: loadingDeleteFriend }] =
     useDeleteFriendMutation();
 
-  const { data: profile, isLoading: loadingGetProfile } =
-    useGetUserProfileQuery();
+  const [addFriend, { isLoading: loadingAddFriend }] = useAddFriendMutation();
+
+  const {
+    data: profile,
+    isLoading: loadingGetProfile,
+    refetch: refetchGetProfile,
+  } = useGetUserProfileQuery();
   const userFriends = profile?.friends ?? [];
   const isFriend = userFriends.some((friend) => friend.user === friendId);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const daysOfWeek = [
     "monday",
@@ -51,8 +57,19 @@ const FriendScreen = () => {
       const res = await deleteFriend(friendId);
       dispatch(setCredentials({ ...res.data }));
       toast.success("Friend Successfully Deleted");
-      navigate("/profile");
-      refetch();
+      // navigate("/profile");
+      refetchGetProfile();
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleAddFriendClick = async (userId) => {
+    try {
+      const res = await addFriend(userId);
+      dispatch(setCredentials({ ...res.data }));
+      toast.success("Successfully added friend");
+      refetchGetProfile();
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -67,7 +84,7 @@ const FriendScreen = () => {
       >
         Go Back
       </Link>
-      {isLoading ? (
+      {isLoading || loadingAddFriend ? (
         <Loader />
       ) : (
         <Container>
@@ -75,13 +92,22 @@ const FriendScreen = () => {
             <h1>
               {friend && friend.firstName} {friend && friend.lastName}
             </h1>
-            {isFriend && !loadingGetProfile && (
+            {isFriend ? (
+              !loadingGetProfile && (
+                <Button
+                  onClick={deleteFriendHandler}
+                  color="error"
+                  variant="contained"
+                >
+                  Delete
+                </Button>
+              )
+            ) : (
               <Button
-                onClick={deleteFriendHandler}
-                color="error"
+                onClick={() => handleAddFriendClick(friendId)}
                 variant="contained"
               >
-                Delete
+                Add
               </Button>
             )}
           </div>

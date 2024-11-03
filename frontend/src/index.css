@@ -66,5 +66,44 @@ body {
 }
 
 .exercises-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .sideways-text {
+    display: inline;
+    padding-top: 12.5rem;
+    padding-bottom: 12.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.15rem;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    font-weight: 400;
+    writing-mode: vertical-rl;
+    text-orientation: sideways;
+    transform: rotate(180deg);
+    margin-right: 1rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sideways-text {
+    text-align: center;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.15rem;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+}
+
+.small-flame {
+  padding: 0.25rem;
+}
+
+.small-days {
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
 }

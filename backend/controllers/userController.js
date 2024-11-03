@@ -190,6 +190,16 @@ const addWorkout = asyncHandler(async (req, res) => {
       throw new Error("User not found");
     }
 
+    const workoutCount = user.workouts.filter(
+      (workout) => workout.day === workoutDay
+    ).length;
+
+    // Step 2: Add a conditional check
+    if (workoutCount >= 3) {
+      res.status(400);
+      throw new Error("Maximum of 3 workouts per day");
+    }
+
     const newWorkout = {
       name: workoutName,
       day: workoutDay,

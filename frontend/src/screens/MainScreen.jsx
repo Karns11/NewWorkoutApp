@@ -88,6 +88,8 @@ const MainScreen = () => {
   const dateObject = new Date();
   const dayOfMonth = dateObject.getDate();
 
+  const dayOfWeek = dateObject.getDay();
+
   const muscleIndex = (dayOfMonth - 1) % muscleOptions.length;
   const randomMuscle = muscleOptions[muscleIndex];
 
@@ -139,6 +141,17 @@ const MainScreen = () => {
       toast.error("Please select a day for your workout");
     } else {
       try {
+        // Get the user's current workouts for the selected day from the fetched data
+        const currentUserWorkouts = workouts.filter(
+          (workout) => workout.day === selectedDay
+        );
+        const workoutCount = currentUserWorkouts.length;
+
+        // Check if the count is less than three
+        if (workoutCount >= 3) {
+          toast.error("Maximum of 3 workouts per day");
+          return;
+        }
         const res = await addWorkout({
           workoutName: aWorkout,
           workoutDay: selectedDay,
@@ -181,6 +194,16 @@ const MainScreen = () => {
     "Sunday",
   ];
 
+  const colors = [
+    "#7A3E3E",
+    "#468B97",
+    "#EF6262",
+    "#F3AA60",
+    "#9681EB",
+    "#FFA41B",
+    "#FF90BB",
+  ];
+
   return (
     <div>
       <MainHeader />
@@ -188,6 +211,128 @@ const MainScreen = () => {
         <Typography variant="h2" className="text-center">
           Welcome Back, {userInfo.firstName}
         </Typography>
+        <Row>
+          <Col className="lg:hidden block">
+            <Card
+              style={{
+                boxShadow: "0px 0px 8px black",
+              }}
+              className="my-2"
+            >
+              <Card.Body>
+                <div className="flex justify-center">
+                  <Typography variant="h5">Current Streak</Typography>
+                </div>
+                <div className="flex justify-center">
+                  <Typography variant="p">
+                    Complete a workout each day to build your streak
+                  </Typography>
+                </div>
+                <div className="flex justify-center mt-2">
+                  <div
+                    className="flex justify-center mr-2 small-flame"
+                    style={{ backgroundColor: "#000", borderRadius: "0.45rem" }}
+                  >
+                    <Typography variant="p" className="mx-1 text-white">
+                      0
+                    </Typography>
+                    <div className="flex items-center mx-1">
+                      <i
+                        className="fa-solid fa-fire"
+                        style={{ color: "orange" }}
+                      ></i>
+                    </div>
+                  </div>
+                  {daysOfWeek.map((day, ind) => {
+                    return (
+                      <div
+                        key={ind}
+                        className="flex items-center mx-2 small-days"
+                        style={
+                          ind + 1 === dayOfWeek
+                            ? {
+                                backgroundColor: "#000",
+                                borderRadius: "3rem",
+                                border: "3px solid #00df9a",
+                              }
+                            : {
+                                backgroundColor: "#000",
+                                borderRadius: "3rem",
+                              }
+                        }
+                      >
+                        <Typography variant="p" className="text-white">
+                          {day.substring(0, 2)}
+                        </Typography>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="hidden lg:block">
+            <Card
+              style={{
+                boxShadow: "0px 0px 8px black",
+              }}
+              className="my-2"
+            >
+              <Card.Body>
+                <div className="flex justify-center">
+                  <Typography variant="h4">Current Streak</Typography>
+                </div>
+                <div className="flex justify-center">
+                  <Typography variant="p">
+                    Complete a workout each day to build your streak
+                  </Typography>
+                </div>
+                <div className="flex justify-center mt-2">
+                  <div
+                    className="flex justify-center p-2 mr-2"
+                    style={{ backgroundColor: "#000", borderRadius: "0.45rem" }}
+                  >
+                    <Typography variant="h5" className="mx-1 text-white">
+                      0
+                    </Typography>
+                    <div className="flex items-center mx-1">
+                      <i
+                        className="fa-solid fa-fire"
+                        style={{ color: "orange" }}
+                      ></i>
+                    </div>
+                  </div>
+                  {daysOfWeek.map((day, ind) => {
+                    return (
+                      <div
+                        key={ind}
+                        className="flex items-center mx-2 px-4"
+                        style={
+                          ind + 1 === dayOfWeek
+                            ? {
+                                backgroundColor: "#000",
+                                borderRadius: "3rem",
+                                border: "3px solid #00df9a",
+                              }
+                            : {
+                                backgroundColor: "#000",
+                                borderRadius: "3rem",
+                              }
+                        }
+                      >
+                        <Typography variant="p" className="text-white">
+                          {day.substring(0, 3)}
+                        </Typography>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
         <Row>
           <Col md={6}>
             <Card
@@ -230,6 +375,7 @@ const MainScreen = () => {
             </Card>
           </Col>
         </Row>
+
         <Row>
           <Col>
             {loadingApiKey || !exercise ? (
@@ -403,107 +549,141 @@ const MainScreen = () => {
         </Row>
         <Row>
           <Col>
-            <Card
+            {/* <Card
               className="p-2 mt-2 mb-3"
               style={{ boxShadow: "0px 0px 8px black" }}
-            >
-              <Typography variant="h4" className="text-center mt-1">
-                Your Collection
-              </Typography>
-              {loadingGetWorkouts && <Loader></Loader>}
-              {loadingDeleteWorkout && <Loader></Loader>}
-              {error && <Message variant="danger">{error}</Message>}
-              {workouts && (
-                <>
-                  {daysOfWeek.map((day) => {
-                    const filteredWorkouts = workouts.filter(
-                      (workout) =>
-                        workout.day.toLowerCase() === day.toLowerCase()
-                    );
+            > */}
+            <Typography variant="h4" className="text-center mt-4 mb-2">
+              Your Collection
+            </Typography>
+            {loadingGetWorkouts && <Loader></Loader>}
+            {loadingDeleteWorkout && <Loader></Loader>}
+            {error && <Message variant="danger">{error}</Message>}
+            {workouts && (
+              <>
+                {daysOfWeek.map((day) => {
+                  const filteredWorkouts = workouts.filter(
+                    (workout) => workout.day.toLowerCase() === day.toLowerCase()
+                  );
 
-                    return (
-                      <Row key={day}>
-                        {filteredWorkouts.length > 0 && (
-                          <h2 className="text-dark mt-2">
-                            {day.charAt(0).toUpperCase() + day.slice(1)}
-                          </h2>
-                        )}
-                        {filteredWorkouts.map((workout) => (
-                          <Col md={4} key={workout._id}>
-                            <Card id={workout._id} className="hover-card">
-                              <Link
-                                to={`/users/workout/${workout._id}`}
-                                style={{ textDecoration: "none" }}
+                  return (
+                    <div key={day}>
+                      <Row>
+                        <div className="lg:flex">
+                          {filteredWorkouts.length > 0 && (
+                            <h2
+                              className="text-dark sideways-text"
+                              style={{
+                                backgroundColor: `${
+                                  colors[daysOfWeek.indexOf(day)]
+                                }`,
+                              }}
+                            >
+                              {day.charAt(0).toUpperCase() + day.slice(1)}
+                            </h2>
+                          )}
+                          {filteredWorkouts.map((workout) => (
+                            <Col md={6} lg={4} key={workout._id}>
+                              <Card
+                                id={workout._id}
+                                className="hover-card lg:mr-4"
                               >
-                                <ListGroup variant="flush">
-                                  <ListGroup.Item>
-                                    <Row>
-                                      <Col md={12}>
-                                        <h3>
-                                          {workout.name
-                                            .charAt(0)
-                                            .toUpperCase() +
-                                            workout.name.slice(1)}
-                                        </h3>
-                                      </Col>
-                                    </Row>
-                                  </ListGroup.Item>
-                                  <ListGroup.Item>
-                                    <Row>
-                                      <Col xs={1}>
-                                        <i className="fa-solid fa-calendar-days"></i>
-                                      </Col>
-                                      <Col>
-                                        {workout.day.charAt(0).toUpperCase() +
-                                          workout.day.slice(1)}
-                                      </Col>
-                                    </Row>
-                                  </ListGroup.Item>
-                                  {workout.exercises.length > 0 && (
+                                <Link
+                                  to={`/users/workout/${workout._id}`}
+                                  style={{ textDecoration: "none" }}
+                                >
+                                  <ListGroup variant="flush">
                                     <ListGroup.Item>
                                       <Row>
-                                        <Col xs={4} md={4}>
-                                          <h4 className="exercises-title">
-                                            Exercises:
-                                          </h4>
-                                        </Col>
-
-                                        <Col xs={5} md={5}>
-                                          {workout.exercises.map((exercise) => (
-                                            <p key={exercise._id}>
-                                              {exercise.name}
-                                            </p>
-                                          ))}
-                                        </Col>
-                                        <Col xs={3} md={3}>
-                                          {workout.exercises.map((exercise) => (
-                                            <p key={exercise._id}>
-                                              {exercise.sets} X {exercise.reps}
-                                            </p>
-                                          ))}
+                                        <Col md={12}>
+                                          <h3 className="text-center font-bold">
+                                            {workout.name
+                                              .charAt(0)
+                                              .toUpperCase() +
+                                              workout.name.slice(1)}
+                                          </h3>
                                         </Col>
                                       </Row>
                                     </ListGroup.Item>
-                                  )}
-                                </ListGroup>
-                              </Link>
-                              <Button
-                                className="btn-danger"
-                                onClick={() =>
-                                  deleteWorkoutHandler(workout._id)
-                                }
-                              >
-                                <i className="fa-solid fa-trash"></i> Delete
-                              </Button>
-                            </Card>
-                          </Col>
-                        ))}
+                                    {/* <ListGroup.Item>
+                                      <Row>
+                                        <Col xs={1}>
+                                          <i className="fa-solid fa-calendar-days"></i>
+                                        </Col>
+                                        <Col>
+                                          {workout.day.charAt(0).toUpperCase() +
+                                            workout.day.slice(1)}
+                                        </Col>
+                                      </Row>
+                                    </ListGroup.Item> */}
+                                    {workout.exercises.length > 0 ? (
+                                      <ListGroup.Item>
+                                        <Row>
+                                          {/* <Col xs={4} md={4}>
+                                            <h4 className="exercises-title">
+                                              Exercises:
+                                            </h4>
+                                          </Col> */}
+
+                                          <Col xs={9} md={9}>
+                                            {workout.exercises.map(
+                                              (exercise) => (
+                                                <p
+                                                  className="font-bold"
+                                                  key={exercise._id}
+                                                >
+                                                  {exercise.name
+                                                    .charAt(0)
+                                                    .toUpperCase() +
+                                                    exercise.name.slice(1)}
+                                                </p>
+                                              )
+                                            )}
+                                          </Col>
+                                          <Col xs={3} md={3}>
+                                            {workout.exercises.map(
+                                              (exercise) => (
+                                                <p key={exercise._id}>
+                                                  {exercise.sets} X{" "}
+                                                  {exercise.reps}
+                                                </p>
+                                              )
+                                            )}
+                                          </Col>
+                                        </Row>
+                                      </ListGroup.Item>
+                                    ) : (
+                                      <ListGroup.Item>
+                                        <Row>
+                                          <p className="text-center">
+                                            Click to explore and add exercises!
+                                          </p>
+                                        </Row>
+                                      </ListGroup.Item>
+                                    )}
+                                  </ListGroup>
+                                </Link>
+                                <MuiButton
+                                  className="border"
+                                  color="error"
+                                  onClick={() =>
+                                    deleteWorkoutHandler(workout._id)
+                                  }
+                                >
+                                  <i className="fa-solid fa-trash"></i> Delete
+                                </MuiButton>
+                              </Card>
+                            </Col>
+                          ))}
+                        </div>
                       </Row>
-                    );
-                  })}
-                </>
-              )}
-            </Card>
+                      <div className="border-gray border-1 my-4" />
+                    </div>
+                  );
+                })}
+              </>
+            )}
+            {/* </Card> */}
           </Col>
         </Row>
       </Container>
